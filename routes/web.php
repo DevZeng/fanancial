@@ -16,6 +16,7 @@ Route::options('{all}',function (){return 'ok';})->middleware('cross');
 
 Route::group(['middleware'=>'cross'],function (){
     Route::post('login','UserController@login');
+    Route::get('access/token','UserController@get_qrcode');
     Route::get('logout','UserController@logout');
     Route::post('upload','SystemController@upload');
 
@@ -32,6 +33,8 @@ Route::group(['middleware'=>'cross'],function (){
     Route::get('types','BusinessController@getTypes');
     Route::get('users','UserController@listUsers');
     Route::get('applies','UserController@listApplies');
+    Route::get('loans','LoanController@listLoans');
+    Route::get('loan/{id}','LoanController@getLoan');
 //    Route::group(['middleware'=>'auth'],function (){
 //        Route::post('banner','BannerController@createBanner');
 //        Route::delete('banner/{id}','BannerController@delBanner');

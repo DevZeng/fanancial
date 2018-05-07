@@ -9,12 +9,14 @@ class Wxxcx
     private $secret;
     private $code2session_url;
     private $sessionKey;
+    private $access_token_url;
 
     public function __construct($appid,$secret,$code2session_url = "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code")
     {
         $this->appid = $appid;
         $this->secret = $secret;
         $this->code2session_url = $code2session_url;
+        $this->access_token_url =  "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s";
     }
 
 
@@ -60,5 +62,15 @@ class Wxxcx
             ];
         }
         return $data;
+    }
+    public function getAccessToken()
+    {
+        $access_token_url = sprintf($this->access_token_url,$this->appid,$this->secret);
+        $access_token = $this->request($access_token_url);
+        if(!isset($access_token['access_token'])){
+            return false;
+        }
+//        $this->sessionKey = $userInfo['session_key'];
+        return $access_token;
     }
 }
