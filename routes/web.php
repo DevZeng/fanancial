@@ -19,21 +19,34 @@ Route::group(['middleware'=>'cross'],function (){
     Route::get('logout','UserController@logout');
     Route::post('upload','SystemController@upload');
 
-    Route::group(['middleware'=>'auth'],function (){
-        Route::post('banner','BannerController@createBanner');
-        Route::delete('banner/{id}','BannerController@delBanner');
-        Route::put('banner/{id}','BannerController@editBanner');
-        Route::get('banner/{id}','BannerController@getBanner');
-        Route::get('banners','BannerController@getBanners');
-        Route::post('business','BusinessController@create');
-        Route::get('businesses','BusinessController@getBusinesses');
+    Route::post('banner','BannerController@createBanner');
+    Route::delete('banner/{id}','BannerController@delBanner');
+    Route::put('banner/{id}','BannerController@editBanner');
+    Route::get('banner/{id}','BannerController@getBanner');
+    Route::get('banners','BannerController@getBanners');
+    Route::post('business','BusinessController@create');
+    Route::get('businesses','BusinessController@getBusinesses');
 //        Route::put('business/{id}','BusinessController@edit');
-        Route::delete('business/{id}','BusinessController@delete');
-        Route::get('business/{id}','BusinessController@getBusiness');
-        Route::get('types','BusinessController@getTypes');
-        Route::get('users','UserController@listUsers');
-        Route::get('applies','UserController@listApplies');
-    });
+    Route::delete('business/{id}','BusinessController@delete');
+    Route::get('business/{id}','BusinessController@getBusiness');
+    Route::get('types','BusinessController@getTypes');
+    Route::get('users','UserController@listUsers');
+    Route::get('applies','UserController@listApplies');
+//    Route::group(['middleware'=>'auth'],function (){
+//        Route::post('banner','BannerController@createBanner');
+//        Route::delete('banner/{id}','BannerController@delBanner');
+//        Route::put('banner/{id}','BannerController@editBanner');
+//        Route::get('banner/{id}','BannerController@getBanner');
+//        Route::get('banners','BannerController@getBanners');
+//        Route::post('business','BusinessController@create');
+//        Route::get('businesses','BusinessController@getBusinesses');
+////        Route::put('business/{id}','BusinessController@edit');
+//        Route::delete('business/{id}','BusinessController@delete');
+//        Route::get('business/{id}','BusinessController@getBusiness');
+//        Route::get('types','BusinessController@getTypes');
+//        Route::get('users','UserController@listUsers');
+//        Route::get('applies','UserController@listApplies');
+//    });
 });
 
 
