@@ -95,6 +95,7 @@ class BusinessController extends Controller
         }
         if ($types){
             $list = TypeList::whereIn('type_id',$types)->pluck('business_id')->toArray();
+            dd($list);
             $data1 = $db->whereIn('id',$list)->limit($limit)->offset(($page-1)*$limit)->get()->toArray();
             $data2 = $db->whereNotIn('id',$list)->limit($limit)->offset(($page-1)*$limit)->get()->toArray();
             $data = array_merge($data1,$data2);

@@ -273,5 +273,9 @@ class UserController extends Controller
             'msg'=>'ok'
         ]);
     }
+    public function createPermission(Request $post)
+    {
+
+    }
 
 }
