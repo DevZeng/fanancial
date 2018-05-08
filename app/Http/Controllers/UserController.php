@@ -150,7 +150,20 @@ class UserController extends Controller
     }
     public function listAgents()
     {
-
+        $page = Input::get('page',1);
+        $limit = Input::get('limit',10);
+        $dbObj = WeChatUser::where('level','!=','D');
+        $count = $dbObj->count();
+        $name = Input::get('search');
+        if ($name){
+            $dbObj->where('name','like','%'.$name.'%')->where('phone','like','%'.$name.'%');
+        }
+        $data = $dbObj->limit($limit)->offset(($page-1)*$limit)->get();
+        return response()->json([
+            'msg'=>'ok',
+            'count'=>$count,
+            'data'=>$data
+        ]);
     }
     public function listApplies()
     {
@@ -241,6 +254,24 @@ class UserController extends Controller
         curl_close($ch);
         $out = json_decode($output);
         return $out;
+    }
+    public function checkApply()
+    {
+        $id = Input::get('id');
+        $apply = ProxyApply::findOrFail($id);
+        $state = Input::get('state');
+        if ($state==1){
+            $apply->state = 0;
+        }else{
+            $apply->state = 2;
+            $user = WeChatUser::find($apply->user_id);
+            $user->level = 'C';
+            $user->save();
+        }
+        $apply->save();
+        return response()->json([
+            'msg'=>'ok'
+        ]);
     }
 
 }

@@ -32,7 +32,9 @@ Route::group(['middleware'=>'cross'],function (){
     Route::get('business/{id}','BusinessController@getBusiness');
     Route::get('types','BusinessController@getTypes');
     Route::get('users','UserController@listUsers');
+    Route::get('agents','UserController@listAgents');
     Route::get('applies','UserController@listApplies');
+    Route::get('check/apply','UserController@checkApply');
     Route::get('loans','LoanController@listLoans');
     Route::get('loan/{id}','LoanController@getLoan');
 //    Route::group(['middleware'=>'auth'],function (){
