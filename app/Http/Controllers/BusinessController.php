@@ -94,6 +94,7 @@ class BusinessController extends Controller
             $db->whereBetween('min',[$min,$max])->whereBetween('max',[$min,$max]);
         }
         if ($types){
+            print_r($types);
             $list = TypeList::whereIn('type_id',$types)->pluck('business_id')->toArray();
             dd($list);
             $data1 = $db->whereIn('id',$list)->limit($limit)->offset(($page-1)*$limit)->get()->toArray();
