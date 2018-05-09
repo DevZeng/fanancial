@@ -23,6 +23,7 @@ class CreateLoansTable extends Migration
             $table->float('brokerage',18,2);
             $table->unsignedInteger('proxy_id')->default(0);
             $table->tinyInteger('state')->default(1);
+            $table->tinyInteger('pay')->default(0);
             $table->unsignedInteger('user_id');
             $table->timestamps();
         });

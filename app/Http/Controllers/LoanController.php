@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Business;
 use App\Models\Loan;
+use App\Models\SysConfig;
 use App\Models\WeChatUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
+use Mockery\Exception;
 
 class LoanController extends Controller
 {
@@ -95,6 +97,36 @@ class LoanController extends Controller
             'msg'=>'ok',
             'data'=>$loan
         ]);
+    }
+    public function payLoan($id)
+    {
+        DB::beginTransaction();
+        try{
+            $config = SysConfig::first();
+            $loan = Loan::findOrFail($id);
+            if ($loan->state!=3){
+                return response()->json([
+                    'msg'=>'该状态下不能发放贷款！'
+                ]);
+            }
+            $loan->pay = 1;
+            $loan->save();
+            if ($loan->proxy_id !=0){
+                $user = WeChatUser::findOrFail($loan->proxy_id);
+            }
+//            $user = WeChatUser::findOrFail()
+        }catch (Exception $exception){
+
+        }
+
+    }
+    public function brokerage($user)
+    {
+        $user->level = 'C';
+        if ($user->proxy_id!=0){
+            $swap = WeChatUser::find($user->proxy_id);
+            $this->brokerage($swap);
+        }
     }
 
 }

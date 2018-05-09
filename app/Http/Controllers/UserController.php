@@ -8,8 +8,10 @@ use App\Models\Permission;
 use App\Models\ProxyApply;
 use App\Models\Role;
 use App\Models\RolePermission;
+use App\Models\RoleUser;
 use App\Models\ScanRecord;
 use App\Models\WeChatUser;
+use App\User;
 use GuzzleHttp\Handler\CurlFactory;
 use GuzzleHttp\Handler\CurlHandler;
 use Illuminate\Http\Request;
@@ -270,7 +272,7 @@ class UserController extends Controller
             $apply->state = 2;
             $user = WeChatUser::find($apply->user_id);
             $user->level = 'C';
-            $user->code= uniqid();
+//            $user->code= uniqid();
             $user->save();
         }
         $apply->save();
@@ -300,6 +302,28 @@ class UserController extends Controller
             $rolePermission->role_id = $role->id;
             $rolePermission->permission_id = $list;
             $rolePermission->save();
+        }
+        return response()->json([
+            'msg'=>'ok'
+        ]);
+    }
+    public function createUser(Request $post)
+    {
+        $id = $post->id;
+        if ($id){
+
+        }else{
+            $user = new User();
+            $user->name = $post->name;
+            $user->phone = $post->phone;
+            $user->username = $post->username;
+            $user->password = bcrypt($post->password);
+            if ($post->role_id){
+                $roleUser = new RoleUser();
+                $roleUser->role_id = $post->role_id;
+                $roleUser->user_id = $user->id;
+                $roleUser->save();
+            }
         }
         return response()->json([
             'msg'=>'ok'
@@ -351,7 +375,7 @@ class UserController extends Controller
     {
         $uid = getUserToken(Input::get('token'));
         $user = WeChatUser::find($uid);
-        if($user->level=='D'){
+        if($user->level !='B'){
             return response()->json([
                 'msg'=>'无权操作～'
             ],400);

@@ -17,6 +17,8 @@ Route::options('{all}',function (){return 'ok';})->middleware('cross');
 Route::get('test',function (){
     return uniqid();
 });
+Route::post('permission','UserController@createPermission');
+Route::post('role','UserController@createPermission');
 Route::group(['middleware'=>'cross'],function (){
     Route::post('login','UserController@login');
     Route::get('access/token','UserController@get_qrcode');
@@ -35,6 +37,7 @@ Route::group(['middleware'=>'cross'],function (){
     Route::get('business/{id}','BusinessController@getBusiness');
     Route::get('types','BusinessController@getTypes');
     Route::get('users','UserController@listUsers');
+    Route::post('user','UserController@createUser');
     Route::get('agents','UserController@listAgents');
     Route::get('applies','UserController@listApplies');
     Route::get('check/apply','UserController@checkApply');
