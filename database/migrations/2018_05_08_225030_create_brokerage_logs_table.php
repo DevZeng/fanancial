@@ -19,7 +19,7 @@ class CreateBrokerageLogsTable extends Migration
             $table->unsignedInteger('proxy_id');
             $table->float('brokerage',18,2)->default(0);
             $table->unsignedInteger('loan_id');
-            $table->
+            $table->tinyInteger('state')->default(0);
             $table->timestamps();
         });
     }
