@@ -37,6 +37,7 @@ Route::group(['middleware'=>'cross'],function (){
     Route::get('check/apply','UserController@checkApply');
     Route::get('loans','LoanController@listLoans');
     Route::get('loan/{id}','LoanController@getLoan');
+    Route::get('agent/{id}','UserController@getProxy');
 //    Route::group(['middleware'=>'auth'],function (){
 //        Route::post('banner','BannerController@createBanner');
 //        Route::delete('banner/{id}','BannerController@delBanner');

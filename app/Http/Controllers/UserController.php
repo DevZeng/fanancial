@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginPost;
 use App\Libraries\Wxxcx;
+use App\Models\Permission;
 use App\Models\ProxyApply;
+use App\Models\Role;
+use App\Models\RolePermission;
 use App\Models\WeChatUser;
 use GuzzleHttp\Handler\CurlFactory;
 use GuzzleHttp\Handler\CurlHandler;
@@ -275,7 +278,45 @@ class UserController extends Controller
     }
     public function createPermission(Request $post)
     {
-
+        $premission = new Permission();
+        $premission->name = $post->name;
+        $premission->display_name = $post->display_name;
+        $premission->save();
+        return response()->json([
+            'msg'=>'ok'
+        ]);
+    }
+    public function createRole(Request $post)
+    {
+        $role = new Role();
+        $role->name = $post->name;
+        $role->display_name = $post->display_name;
+        $role->save();
+        $lists = $post->lists;
+        foreach ($lists as $list){
+            $rolePermission = new RolePermission();
+            $rolePermission->role_id = $role->id;
+            $rolePermission->permission_id = $list;
+            $rolePermission->save();
+        }
+        return response()->json([
+            'msg'=>'ok'
+        ]);
+    }
+//    public function crea
+    public function getProxy($id)
+    {
+//        $id = Input::get('id');
+        $user = WeChatUser::find($id);
+        $user->proxy = $user->proxy()->first();
+        $lists = WeChatUser::where('proxy_id','=',$id)->get();
+        return response()->json([
+            'msg'=>'ok',
+            'data'=>[
+                'user'=>$user,
+                'list'=>$lists
+            ]
+        ]);
     }
 
 }

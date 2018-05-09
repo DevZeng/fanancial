@@ -11,4 +11,8 @@ class WeChatUser extends Model
     {
         return $this->hasMany('App\Models\Loan','user_id','id');
     }
+    public function proxy()
+    {
+        return $this->hasOne('App\Models\ProxyApply','user_id','id');
+    }
 }

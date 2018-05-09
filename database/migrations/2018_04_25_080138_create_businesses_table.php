@@ -24,6 +24,7 @@ class CreateBusinessesTable extends Migration
             $table->float('brokerage',18,2)->default(0);
             $table->text('intro')->nullable();
             $table->tinyInteger('state')->default(1);
+            $table->tinyInteger('finish')->default(0);
             $table->timestamps();
         });
     }
