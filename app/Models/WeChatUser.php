@@ -15,4 +15,8 @@ class WeChatUser extends Model
     {
         return $this->hasOne('App\Models\ProxyApply','user_id','id');
     }
+    public function ratio()
+    {
+        return $this->hasOne('App\Models\ProxyRatio','user_id','id');
+    }
 }

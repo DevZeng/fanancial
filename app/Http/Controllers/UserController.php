@@ -331,5 +331,18 @@ class UserController extends Controller
             'msg'=>'ok'
         ]);
     }
+    public function myAgents()
+    {
+        $uid = getUserToken(Input::get('token'));
+        $agents = WeChatUser::where('level','!=','D')->where('proxy_id','=',$uid)->get();
+        foreach ($agents as $agent){
+            $agent->ratio = $agent->ratio()->pluck('ratio')->first();
+            $agent->phone = $agent->proxy()->where('state','=',2)->pluck('phone')->first();
+        }
+        return response()->json([
+            'msg'=>'ok',
+            'data'=>$agents
+        ]);
+    }
 
 }
