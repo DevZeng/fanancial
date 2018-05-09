@@ -8,6 +8,7 @@ use App\Models\Permission;
 use App\Models\ProxyApply;
 use App\Models\Role;
 use App\Models\RolePermission;
+use App\Models\ScanRecord;
 use App\Models\WeChatUser;
 use GuzzleHttp\Handler\CurlFactory;
 use GuzzleHttp\Handler\CurlHandler;
@@ -316,6 +317,18 @@ class UserController extends Controller
                 'user'=>$user,
                 'list'=>$lists
             ]
+        ]);
+    }
+    public function scan()
+    {
+        $id = Input::get('id');
+        $uid = getUserToken(Input::get('token'));
+        $record = new ScanRecord();
+        $record->proxy_id = $id;
+        $record->user_id = $uid;
+        $record->save();
+        return response()->json([
+            'msg'=>'ok'
         ]);
     }
 

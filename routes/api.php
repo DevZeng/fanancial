@@ -29,4 +29,5 @@ Route::group(['middleware'=>'wx'],function (){
    Route::get('loans','LoanController@myLoans');
    Route::get('loans/count','LoanController@myLoanCount');
    Route::get('qrcode','UserController@get_qrcode');
+   Route::get('scan','UserController@scan');
 });
