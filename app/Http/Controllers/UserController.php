@@ -270,6 +270,7 @@ class UserController extends Controller
             $apply->state = 2;
             $user = WeChatUser::find($apply->user_id);
             $user->level = 'C';
+            $user->code= uniqid();
             $user->save();
         }
         $apply->save();
@@ -337,11 +338,29 @@ class UserController extends Controller
         $agents = WeChatUser::where('level','!=','D')->where('proxy_id','=',$uid)->get();
         foreach ($agents as $agent){
             $agent->ratio = $agent->ratio()->pluck('ratio')->first();
-            $agent->phone = $agent->proxy()->where('state','=',2)->pluck('phone')->first();
+            $proxy = $agent->proxy()->where('state','=',2)->first();
+            $agent->phone = $proxy->phone;
+            $agent->name = $proxy->name;
         }
         return response()->json([
             'msg'=>'ok',
             'data'=>$agents
+        ]);
+    }
+    public function myCode()
+    {
+        $uid = getUserToken(Input::get('token'));
+        $user = WeChatUser::find($uid);
+        if($user->level=='D'){
+            return response()->json([
+                'msg'=>'无权操作～'
+            ],400);
+        }
+        $user->code = uniqid();
+        $user->save();
+        return response()->json([
+            'msg'=>'ok',
+            'data'=>$user
         ]);
     }
 

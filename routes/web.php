@@ -14,6 +14,9 @@
 Route::options('{all}',function (){return 'ok';})->middleware('cross');
 //Route::options('{all}/{all}',function (){return 'ok';})->middleware('cross');
 
+Route::get('test',function (){
+    return uniqid();
+});
 Route::group(['middleware'=>'cross'],function (){
     Route::post('login','UserController@login');
     Route::get('access/token','UserController@get_qrcode');

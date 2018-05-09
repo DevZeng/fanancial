@@ -31,4 +31,5 @@ Route::group(['middleware'=>'wx'],function (){
    Route::get('qrcode','UserController@get_qrcode');
    Route::get('scan','UserController@scan');
    Route::get('my/agents','UserController@myAgents');
+   Route::get('my/code','UserController@myCode');
 });

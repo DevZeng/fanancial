@@ -26,6 +26,7 @@ class CreateWeChatUsersTable extends Migration
             $table->string('phone')->nullable();
 //            $table->tinyInteger('is_proxy')->default(0);
             $table->unsignedInteger('proxy_id')->default(0);
+            $table->string('code')->nullable();
 //            $table->tinyInteger('flag')->default(0);
             $table->tinyInteger('state')->default(1);
             $table->timestamps();
