@@ -18,6 +18,7 @@ Route::get('test',function (){
     return uniqid();
 });
 Route::post('permission','UserController@createPermission');
+Route::post('permissions','UserController@getPermissions');
 Route::post('role','UserController@createPermission');
 Route::group(['middleware'=>'cross'],function (){
     Route::post('login','UserController@login');

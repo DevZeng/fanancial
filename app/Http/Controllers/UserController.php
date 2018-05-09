@@ -290,6 +290,14 @@ class UserController extends Controller
             'msg'=>'ok'
         ]);
     }
+    public function getPermissions()
+    {
+        $permissions = Permission::all();
+        return response()->json([
+            'msg'=>'ok',
+            'data'=>$permissions
+        ]);
+    }
     public function createRole(Request $post)
     {
         $role = new Role();
