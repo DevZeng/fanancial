@@ -135,7 +135,7 @@ class LoanController extends Controller
     public function getUsers($user,$data=[])
     {
         echo "NEW_________";
-        $data = [];
+//        $data = [];
         if (!empty($user)){
 //            var_dump($user);
             array_push($data,$user);
