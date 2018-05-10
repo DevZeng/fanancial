@@ -145,7 +145,8 @@ class LoanController extends Controller
         }
 //        dd($data);
         var_dump($data);
-        return $data;
+        die(1);
+//        return $data;
     }
 
 }
