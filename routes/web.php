@@ -19,7 +19,7 @@ Route::get('test',function (){
 });
 Route::post('permission','UserController@createPermission');
 Route::get('permissions','UserController@getPermissions');
-Route::post('role','UserController@createPermission');
+Route::post('role','UserController@createRole');
 Route::get('roles','UserController@roles');
 Route::group(['middleware'=>'cross'],function (){
     Route::post('login','UserController@login');
