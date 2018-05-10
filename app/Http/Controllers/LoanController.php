@@ -6,6 +6,7 @@ use App\Models\Business;
 use App\Models\Loan;
 use App\Models\SysConfig;
 use App\Models\WeChatUser;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
@@ -136,10 +137,11 @@ class LoanController extends Controller
         if (!empty($user)){
             array_push($data,$user);
             if ($user->proxy_id!=0){
-                $this->getUsers();
+                $swap = User::find($user->proxy_id);
+                $this->getUsers($swap,$data);
             }
         }
-        return true;
+        return $data;
     }
 
 }
