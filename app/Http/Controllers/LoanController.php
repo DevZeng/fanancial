@@ -135,7 +135,7 @@ class LoanController extends Controller
     public function getUsers($user,$data)
     {
         if (!empty($user)){
-            array_push($data,$user);
+            $data = array_push($data,$user);
             if ($user->proxy_id!=0){
                 $swap = User::find($user->proxy_id);
                 $this->getUsers($swap,$data);
