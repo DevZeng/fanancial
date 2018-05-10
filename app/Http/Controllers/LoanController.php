@@ -132,7 +132,7 @@ class LoanController extends Controller
             $this->brokerage($swap);
         }
     }
-    public function getUsers($user,$data=[])
+    public function getUsers($user,&$data=[])
     {
         if (!empty($user)){
 
@@ -144,7 +144,7 @@ class LoanController extends Controller
                 array_push($data,$user);
             }
         }
-        dd($data);
+//        dd($data);
         return $data;
     }
 
