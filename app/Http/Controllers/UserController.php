@@ -34,7 +34,8 @@ class UserController extends Controller
                 'msg'=>'ok',
                 'data'=>[
                     'token'=>csrf_token(),
-                    'permissions'=>$permissions
+                    'permissions'=>$permissions,
+                    'name'=>Auth::user()->username
                 ]
             ]);
         }
