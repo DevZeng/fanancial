@@ -115,8 +115,8 @@ class LoanController extends Controller
             if ($loan->proxy_id !=0){
                 $data = [];
                 $user = WeChatUser::findOrFail($loan->proxy_id);
-                $lists = $this->getUsers($user,$data);
-                dd($lists);
+                $this->getUsers($user,$data);
+                dd($data);
             }
 //            $user = WeChatUser::findOrFail()
 //        }catch (Exception $exception){
@@ -141,7 +141,7 @@ class LoanController extends Controller
                 $this->getUsers($swap,$data);
             }
         }
-        return $data;
+//        return $data;
     }
 
 }
