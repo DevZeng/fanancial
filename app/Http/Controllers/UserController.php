@@ -341,6 +341,7 @@ class UserController extends Controller
             $user->phone = $post->phone;
             $user->username = $post->username;
             $user->password = bcrypt($post->password);
+            $user->save();
             if ($post->role_id){
                 $roleUser = new RoleUser();
                 $roleUser->role_id = $post->role_id;
