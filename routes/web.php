@@ -20,6 +20,7 @@ Route::get('test',function (){
 Route::post('permission','UserController@createPermission');
 Route::post('permissions','UserController@getPermissions');
 Route::post('role','UserController@createPermission');
+Route::get('roles','UserController@roles');
 Route::group(['middleware'=>'cross'],function (){
     Route::post('login','UserController@login');
     Route::get('access/token','UserController@get_qrcode');

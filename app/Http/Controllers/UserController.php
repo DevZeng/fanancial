@@ -21,21 +21,36 @@ use Illuminate\Support\Facades\Input;
 class UserController extends Controller
 {
     //后台登录
+    //后台登录
     public function login(LoginPost $post)
     {
         $username = $post->username;
         $password = $post->password;
         if (Auth::attempt(['username'=>$username,'password'=>$password],true)){
+            $role = RoleUser::where('user_id','=',Auth::id())->pluck('role_id')->first();
+            $idArr = RolePermission::where('role_id','=',$role)->pluck('permission_id')->toArray();
+            $permissions = Permission::whereIn('id',$idArr)->get();
             return response()->json([
                 'msg'=>'ok',
                 'data'=>[
-                    'token'=>csrf_token()
+                    'token'=>csrf_token(),
+                    'permissions'=>$permissions
                 ]
             ]);
         }
         return response()->json([
             'msg'=>'用户名或密码错误！'
         ],422);
+    }
+    public function roles()
+    {
+        $count = Role::count();
+        $roles = Role::all();
+        return response()->json([
+            'msg'=>'ok',
+            'count'=>$count,
+            'data'=>$roles
+        ]);
     }
     //后台退出
     public function logout()
