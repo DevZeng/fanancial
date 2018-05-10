@@ -136,12 +136,13 @@ class LoanController extends Controller
     {
         if (!empty($user)){
             array_push($data,$user);
-            var_dump($data);
+
             if ($user->proxy_id!=0){
                 $swap = WeChatUser::find($user->proxy_id);
                 $this->getUsers($swap,$data);
             }
         }
+        var_dump($data);
         return $data;
     }
 
