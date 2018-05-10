@@ -142,7 +142,7 @@ class LoanController extends Controller
                 $this->getUsers($swap,$data);
             }
         }
-        var_dump($data);
+        dd($data);
         return $data;
     }
 
