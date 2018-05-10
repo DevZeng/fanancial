@@ -133,10 +133,13 @@ class LoanController extends Controller
     }
     public function getUsers($user,$data)
     {
-        array_push($data,$user);
-        if ($user->proxy_id!=0){
-            $this->getUsers();
+        if (!empty($user)){
+            array_push($data,$user);
+            if ($user->proxy_id!=0){
+                $this->getUsers();
+            }
         }
+        return true;
     }
 
 }
