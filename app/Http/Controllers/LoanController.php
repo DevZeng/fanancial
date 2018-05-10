@@ -134,6 +134,7 @@ class LoanController extends Controller
     }
     public function getUsers($user,$data)
     {
+        echo "NEW_________";
         if (!empty($user)){
             array_push($data,$user);
             if ($user->proxy_id!=0){
