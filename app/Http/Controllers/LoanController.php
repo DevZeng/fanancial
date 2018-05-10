@@ -132,10 +132,9 @@ class LoanController extends Controller
             $this->brokerage($swap);
         }
     }
-    public function getUsers($user,&$data=[])
+    public function getUsers($user,$data=[])
     {
         if (!empty($user)){
-
             if ($user->proxy_id!=0){
                 array_push($data,$user);
                 $swap = WeChatUser::find($user->proxy_id);
@@ -145,6 +144,7 @@ class LoanController extends Controller
             }
         }
 //        dd($data);
+        var_dump($data);
         return $data;
     }
 
