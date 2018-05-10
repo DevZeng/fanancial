@@ -113,9 +113,9 @@ class LoanController extends Controller
             $loan->pay = 1;
             $loan->save();
             if ($loan->proxy_id !=0){
-                $data = [];
+//                $data = [];
                 $user = WeChatUser::findOrFail($loan->proxy_id);
-                $this->getUsers($user,$data);
+                $data = $this->getUsers($user);
                 dd($data);
             }
 //            $user = WeChatUser::findOrFail()
@@ -132,19 +132,19 @@ class LoanController extends Controller
             $this->brokerage($swap);
         }
     }
-    public function getUsers($user,$data)
+    public function getUsers($user,$data=[])
     {
         echo "NEW_________";
-
+        $data = [];
         if (!empty($user)){
-            var_dump($user);
+//            var_dump($user);
             array_push($data,$user);
             if ($user->proxy_id!=0){
                 $swap = User::find($user->proxy_id);
                 $this->getUsers($swap,$data);
             }
         }
-//        return $data;
+        return $data;
     }
 
 }
