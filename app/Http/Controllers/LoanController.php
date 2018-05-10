@@ -100,8 +100,8 @@ class LoanController extends Controller
     }
     public function payLoan($id)
     {
-        DB::beginTransaction();
-        try{
+//        DB::beginTransaction();
+//        try{
             $config = SysConfig::first();
             $loan = Loan::findOrFail($id);
             if ($loan->state!=3){
@@ -112,12 +112,15 @@ class LoanController extends Controller
             $loan->pay = 1;
             $loan->save();
             if ($loan->proxy_id !=0){
+                $data = [];
                 $user = WeChatUser::findOrFail($loan->proxy_id);
+                $lists = $this->getUsers($user,$data);
+                dd($lists);
             }
 //            $user = WeChatUser::findOrFail()
-        }catch (Exception $exception){
-
-        }
+//        }catch (Exception $exception){
+//
+//        }
 
     }
     public function brokerage($user)
@@ -126,6 +129,13 @@ class LoanController extends Controller
         if ($user->proxy_id!=0){
             $swap = WeChatUser::find($user->proxy_id);
             $this->brokerage($swap);
+        }
+    }
+    public function getUsers($user,$data)
+    {
+        array_push($data,$user);
+        if ($user->proxy_id!=0){
+            $this->getUsers();
         }
     }
 
