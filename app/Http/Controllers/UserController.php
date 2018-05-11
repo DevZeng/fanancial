@@ -425,5 +425,16 @@ class UserController extends Controller
             'data'=>$message
         ]);
     }
+    public function searchMessage()
+    {
+        $page = Input::get('page',1);
+        $limit = Input::get('limit',10);
+        $open_id = Input::get('open_id');
+        $message = Message::where('from','=',$open_id)->orWhere('receive','=',$open_id)->limit($limit)->offset(($page-1)*$limit)->orderBy('id','DESC')->get();
+        return response()->json([
+            'msg'=>'ok',
+            'data'=>$message
+        ]);
+    }
 
 }

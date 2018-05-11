@@ -43,6 +43,7 @@ Route::group(['middleware'=>'cross'],function (){
     Route::get('agents','UserController@listAgents');
     Route::get('applies','UserController@listApplies');
     Route::get('check/apply','UserController@checkApply');
+    Route::get('messages','UserController@searchMessage');
     Route::get('loans','LoanController@listLoans');
     Route::get('loan/{id}','LoanController@getLoan');
     Route::get('agent/{id}','UserController@getProxy');
