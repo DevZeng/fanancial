@@ -32,4 +32,5 @@ Route::group(['middleware'=>'wx'],function (){
    Route::get('scan','UserController@scan');
    Route::get('my/agents','UserController@myAgents');
    Route::get('my/code','UserController@myCode');
+   Route::get('my/message','UserController@myMessage');
 });

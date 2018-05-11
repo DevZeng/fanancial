@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginPost;
 use App\Libraries\Wxxcx;
+use App\Models\Message;
 use App\Models\Permission;
 use App\Models\ProxyApply;
 use App\Models\Role;
@@ -410,6 +411,18 @@ class UserController extends Controller
         return response()->json([
             'msg'=>'ok',
             'data'=>$user
+        ]);
+    }
+    public function myMessage()
+    {
+        $uid = getUserToken(Input::get('token'));
+        $page = Input::get('page',1);
+        $limit = Input::get('limit',10);
+        $wechat = WeChatUser::find($uid);
+        $message = Message::where('from','=',$wechat->open_id)->orWhere('receive','=',$wechat->open_id)->limit($limit)->offset(($page-1)*$limit)->orderBy('id','DESC')->get();
+        return response()->json([
+            'msg'=>'ok',
+            'data'=>$message
         ]);
     }
 
