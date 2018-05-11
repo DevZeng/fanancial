@@ -431,8 +431,10 @@ class UserController extends Controller
         $limit = Input::get('limit',10);
         $open_id = Input::get('open_id');
         $message = Message::where('from','=',$open_id)->orWhere('receive','=',$open_id)->limit($limit)->offset(($page-1)*$limit)->orderBy('id','DESC')->get();
+        $count = Message::where('from','=',$open_id)->orWhere('receive','=',$open_id)->count();
         return response()->json([
             'msg'=>'ok',
+            'count'=>$count,
             'data'=>$message
         ]);
     }
