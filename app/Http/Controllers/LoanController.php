@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BrokerageLog;
 use App\Models\Business;
 use App\Models\Loan;
+use App\Models\Rate;
 use App\Models\SysConfig;
 use App\Models\WeChatUser;
 use App\User;
@@ -118,15 +120,43 @@ class LoanController extends Controller
                 $list = $this->getUsers($user);
                 foreach ($list as $item){
                     if ($item->level=='C'){
-
+                        $ratio = Rate::where('user_id','=',$user->id)->pluck('rate')->first();
+                        $ratio = ($ratio*$config->rate)/100;
+                        $price = $loan->brokerage * $ratio;
+                    }elseif ($item->level =='B'){
+                        $ratio = Rate::where('user_id','=',$user->id)->pluck('rate')->first();
+                        $ratio = ($ratio*$config->rate)/100;
+                        $price = $loan->brokerage * (1-$ratio);
+                    }else{
+                        $count = WeChatUser::where('proxy_id','=',$item->id)->count();
+                        if ($count>3){
+                            $ratio = 0.1;
+                        }elseif (2<$count && $count<=3){
+                            $ratio = 0.05;
+                        }else{
+                            $ratio = 0.03;
+                        }
+                        $price = $loan->brokerage * $ratio;
                     }
+                    $brokerage = new BrokerageLog();
+                    $brokerage->user_id = $item->id;
+                    $brokerage->brokerage = $price;
+                    $brokerage->loan_id = $loan->id;
+                    $brokerage->save();
                 }
 //                $list =
-                dd($list);
+//                dd($list);
             }
+            DB::commit();
+            return response()->json([
+                'msg'=>'ok'
+            ]);
 //            $user = WeChatUser::findOrFail()
         }catch (Exception $exception){
-
+            DB::rollback();
+            return response()->json([
+                'msg'=>$exception->getMessage()
+            ],400);
         }
 
     }

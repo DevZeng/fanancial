@@ -420,6 +420,14 @@ class UserController extends Controller
         $limit = Input::get('limit',10);
         $wechat = WeChatUser::find($uid);
         $message = Message::where('from','=',$wechat->open_id)->orWhere('receive','=',$wechat->open_id)->limit($limit)->offset(($page-1)*$limit)->orderBy('id','DESC')->get();
+        foreach ($message as $item){
+            if ($item->from==$wechat->open_id) {
+                $item->from = '你：';
+            }
+            if ($item->receive==$wechat->open_id){
+                $item->receive = '你:';
+            }
+        }
         return response()->json([
             'msg'=>'ok',
             'data'=>$message
