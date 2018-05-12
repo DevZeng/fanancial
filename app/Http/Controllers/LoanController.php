@@ -115,7 +115,6 @@ class LoanController extends Controller
             $loan->pay = 1;
             $loan->save();
             if ($loan->proxy_id !=0){
-//                $data = [];
                 $user = WeChatUser::findOrFail($loan->proxy_id);
                 $list = $this->getUsers($user);
                 foreach ($list as $item){
@@ -184,5 +183,6 @@ class LoanController extends Controller
 //        die(1);
         return $data;
     }
+
 
 }

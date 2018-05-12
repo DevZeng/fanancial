@@ -7,11 +7,13 @@ use App\Libraries\Wxxcx;
 use App\Models\Message;
 use App\Models\Permission;
 use App\Models\ProxyApply;
+use App\Models\Rate;
 use App\Models\Role;
 use App\Models\RolePermission;
 use App\Models\RoleUser;
 use App\Models\ScanRecord;
 use App\Models\WeChatUser;
+use App\Models\WithdrawApply;
 use App\User;
 use GuzzleHttp\Handler\CurlFactory;
 use GuzzleHttp\Handler\CurlHandler;
@@ -445,6 +447,31 @@ class UserController extends Controller
             'count'=>$count,
             'data'=>$message
         ]);
+    }
+    public function editRate()
+    {
+        $id = Input::get('id');
+        $rate = Rate::where('user_id','=',$id)->first();
+        $rate->rate = Input::get('rate',$rate->rate);
+        $rate->save();
+        return response()->json([
+            'msg'=>'ok'
+        ]);
+    }
+    public function createWithdrawApply(Request $post)
+    {
+        $uid = getUserToken($post->token);
+        $apply = new WithdrawApply();
+        $apply->name = $post->name;
+        $apply->bank = $post->bank;
+        $apply->account = $post->account;
+        $apply->date = $post->date;
+        $apply->user_id = $uid;
+        if ($apply->save()){
+            return response()->json([
+                'msg'=>'ok'
+            ]);
+        }
     }
 
 }
