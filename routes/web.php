@@ -26,6 +26,8 @@ Route::group(['middleware'=>'cross'],function (){
     Route::get('access/token','UserController@get_qrcode');
     Route::get('logout','UserController@logout');
     Route::post('upload','SystemController@upload');
+    Route::get('config','SystemController@getConfig');
+    Route::post('config','SystemController@editConfig');
 
     Route::post('banner','BannerController@createBanner');
     Route::delete('banner/{id}','BannerController@delBanner');
@@ -47,7 +49,10 @@ Route::group(['middleware'=>'cross'],function (){
     Route::get('loans','LoanController@listLoans');
     Route::get('loan/{id}','LoanController@getLoan');
     Route::get('agent/{id}','UserController@getProxy');
-    Route::get('pay/Loan/{id}','LoanController@payLoan');
+    Route::get('pay/loan/{id}','LoanController@payLoan');
+    Route::get('change/loan/{id}','LoanController@changeLoanState');
+    Route::post('loan/brokerage','LoanController@modifyLoanBrokerage');
+    Route::get('brokerages','LoanController@listBrokerage');
 //    Route::group(['middleware'=>'auth'],function (){
 //        Route::post('banner','BannerController@createBanner');
 //        Route::delete('banner/{id}','BannerController@delBanner');

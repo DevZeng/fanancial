@@ -7,11 +7,13 @@ use App\Libraries\Wxxcx;
 use App\Models\Message;
 use App\Models\Permission;
 use App\Models\ProxyApply;
+use App\Models\ProxyRatio;
 use App\Models\Rate;
 use App\Models\Role;
 use App\Models\RolePermission;
 use App\Models\RoleUser;
 use App\Models\ScanRecord;
+use App\Models\SysConfig;
 use App\Models\WeChatUser;
 use App\Models\WithdrawApply;
 use App\User;
@@ -70,6 +72,10 @@ class UserController extends Controller
         $sessionKey = $wxxcx->getSessionKey($post->code);
         if ($sessionKey){
             $userData = $wxxcx->decode($post->encryptedData,$post->iv);
+            if (isset($userData['code'])&&$userData['code']==10001) {
+                $userData = $wxxcx->decode($post->encryptedData,$post->iv);
+            }
+//            var_dump($userData);
             $userData = json_decode($userData);
             $user = WechatUser::where('open_id','=',$userData->openId)->first();
             if (empty($user)){
@@ -150,7 +156,8 @@ class UserController extends Controller
     public function getApply()
     {
         $uid = getUserToken(Input::get('id'));
-        $proxy = ProxyApply::where('user_id','=',$uid)->orderBy('id','DESC')->first();
+        $config = SysConfig::first();
+        $proxy = ProxyApply::where('user_id','=',$uid)->where('code','=',$config->levelBCode)->orWhere('code','=',$config->levelCCode)->orderBy('id','DESC')->first();
         return response()->json([
             'msg'=>'ok',
             'data'=>$proxy
@@ -389,10 +396,11 @@ class UserController extends Controller
         $uid = getUserToken(Input::get('token'));
         $agents = WeChatUser::where('level','!=','D')->where('proxy_id','=',$uid)->get();
         foreach ($agents as $agent){
-            $agent->ratio = $agent->ratio()->pluck('ratio')->first();
-            $proxy = $agent->proxy()->where('state','=',2)->first();
-            $agent->phone = $proxy->phone;
-            $agent->name = $proxy->name;
+            $ratio = $agent->ratio()->pluck('ratio')->first();
+            $agent->ratio = $ratio?$ratio:0;
+//            $proxy = $agent->proxy()->where('state','=',2)->first();
+//            $agent->phone = $proxy->phone;
+//            $agent->name = $proxy->name;
         }
         return response()->json([
             'msg'=>'ok',
@@ -450,9 +458,13 @@ class UserController extends Controller
     }
     public function editRate()
     {
-        $id = Input::get('id');
-        $rate = Rate::where('user_id','=',$id)->first();
-        $rate->rate = Input::get('rate',$rate->rate);
+        $id = Input::get('user_id');
+        $rate = ProxyRatio::where('user_id','=',$id)->first();
+        if (empty($rate)){
+            $rate = new ProxyRatio();
+            $rate->user_id = $id;
+        }
+        $rate->ratio = Input::get('rate',$rate->rate);
         $rate->save();
         return response()->json([
             'msg'=>'ok'
@@ -473,5 +485,4 @@ class UserController extends Controller
             ]);
         }
     }
-
 }

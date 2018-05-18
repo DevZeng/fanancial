@@ -31,6 +31,9 @@ Route::group(['middleware'=>'wx'],function (){
    Route::get('qrcode','UserController@get_qrcode');
    Route::get('scan','UserController@scan');
    Route::get('my/agents','UserController@myAgents');
+   Route::post('rate','UserController@editRate');
    Route::get('my/code','UserController@myCode');
    Route::get('my/message','UserController@myMessage');
+   Route::post('withdraw/apply','UserController@createWithdrawApply');
+   Route::post('assess','LoanController@createAssess');
 });

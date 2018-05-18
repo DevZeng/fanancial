@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SysConfig;
 use Illuminate\Http\Request;
 
 class SystemController extends Controller
@@ -67,6 +68,33 @@ class SystemController extends Controller
 //                    'size'=>$count+1,
                     'url'=>$destinationPath.'/'.$name,
                 ]
+            ]);
+        }
+    }
+    public function getConfig()
+    {
+        $config = SysConfig::first();
+        if (empty($config)){
+            $config = new SysConfig();
+        }
+        return response()->json([
+            'msg'=>'ok',
+            'data'=>$config
+        ]);
+    }
+    public function editConfig(Request $post)
+    {
+        $config = SysConfig::first();
+        if (empty($config)){
+            $config = new SysConfig();
+            $config->rate = 60;
+        }
+        $config->rate = $post->rate?$post->rate:$config->rate;
+        $config->levelBCode = $post->levelBCode?CreateNonceStr(10):$config->levelBCode;
+        $config->levelCCode = $post->levelCCode?CreateNonceStr(10):$config->levelCCode;
+        if ($config->save()){
+            return response()->json([
+                'msg'=>'ok'
             ]);
         }
     }

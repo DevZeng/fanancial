@@ -16,6 +16,8 @@ class CreateSysConfigsTable extends Migration
         Schema::create('sys_configs', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('rate');
+            $table->string('levelBCode')->nullable();
+            $table->string('levelCCode')->nullable();
             $table->timestamps();
         });
     }

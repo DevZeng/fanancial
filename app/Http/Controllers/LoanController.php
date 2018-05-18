@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Assess;
 use App\Models\BrokerageLog;
 use App\Models\Business;
 use App\Models\Loan;
+use App\Models\ProxyRatio;
 use App\Models\Rate;
 use App\Models\SysConfig;
 use App\Models\WeChatUser;
@@ -101,6 +103,21 @@ class LoanController extends Controller
             'data'=>$loan
         ]);
     }
+    public function changeLoanState($id)
+    {
+        $loan = Loan::find($id);
+        if ($loan->state==1){
+            $loan->state = 2;
+        }elseif ($loan->state==2){
+            $loan->state = 3;
+        }else{
+
+        }
+        $loan->save();
+        return response()->json([
+            'msg'=>'ok'
+        ]);
+    }
     public function payLoan($id)
     {
         DB::beginTransaction();
@@ -119,11 +136,11 @@ class LoanController extends Controller
                 $list = $this->getUsers($user);
                 foreach ($list as $item){
                     if ($item->level=='C'){
-                        $ratio = Rate::where('user_id','=',$user->id)->pluck('rate')->first();
+                        $ratio = ProxyRatio::where('user_id','=',$user->id)->pluck('ratio')->first();
                         $ratio = ($ratio*$config->rate)/100;
                         $price = $loan->brokerage * $ratio;
                     }elseif ($item->level =='B'){
-                        $ratio = Rate::where('user_id','=',$user->id)->pluck('rate')->first();
+                        $ratio = ProxyRatio::where('user_id','=',$user->id)->pluck('ratio')->first();
                         $ratio = ($ratio*$config->rate)/100;
                         $price = $loan->brokerage * (1-$ratio);
                     }else{
@@ -138,6 +155,12 @@ class LoanController extends Controller
                         $price = $loan->brokerage * $ratio;
                     }
                     $brokerage = new BrokerageLog();
+                    if ($item->id==$loan->proxy_id){
+                        $brokerage->type = 1;
+                    }else{
+                        $brokerage->type = 2;
+                    }
+
                     $brokerage->user_id = $item->id;
                     $brokerage->brokerage = $price;
                     $brokerage->loan_id = $loan->id;
@@ -167,6 +190,17 @@ class LoanController extends Controller
             $this->brokerage($swap);
         }
     }
+    public function modifyLoanBrokerage(Request $post)
+    {
+//        $id = $post->id;
+        $loan = Loan::find($post->id);
+        $loan->brokerage = $post->brokerage?$post->brokerage:$loan->brokerage;
+        if ($loan->save()){
+            return response()->json([
+                'msg'=>'ok'
+            ]);
+        }
+    }
     public function getUsers($user,&$data=[])
     {
         if (!empty($user)){
@@ -178,11 +212,53 @@ class LoanController extends Controller
                 array_push($data,$user);
             }
         }
-//        dd($data);
-//        var_dump($data);
-//        die(1);
         return $data;
     }
 
+    public function createAssess(Request $post)
+    {
+        $loan = Loan::find($post->loan_id);
+        if ($loan->state!=3){
+            return response()->json([
+                'msg'=>"当前状态不能评价！"
+            ]);
+        }
+        $assess = new Assess();
+        $assess->loan_id = $loan->id;
+        $assess->before = $post->before;
+        $assess->ing = $post->ing;
+        $assess->sys = $post->sys;
+        $assess->detail = $post->detail;
+        if ($assess->save()){
+            return response()->json([
+                'msg'=>'ok'
+            ]);
+        }
+    }
+    public function listBrokerage()
+    {
+        $limit = Input::get('limit',10);
+        $page = Input::get('page',1);
+        $name = Input::get('name');
+        $date = Input::get('date');
+        $db = DB::table('brokerage_logs');
+        if ($name){
+            $idArr = WeChatUser::where('nickname','=',$name)->pluck('id')->toArray();
+            $db->whereIn('proxy_id',$idArr);
+        }
+        if ($date){
+//            $db->whereMonth()
+        }
+        $list = $db->limit($limit)->offset(($page-1)*$limit)->orderBy('id','DESC')->get();
+        foreach ($list as $item){
+            $item->loan = Loan::find($item->loan_id);
+            $item->proxy = Loan::find($item->proxy_id);
+            $item->user = Loan::find($item->user_id);
+        }
+        return response()->json([
+            'msg'=>'ok',
+            'data'=>$list
+        ]);
+    }
 
 }
