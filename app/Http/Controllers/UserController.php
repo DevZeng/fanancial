@@ -216,7 +216,8 @@ class UserController extends Controller
         $limit = Input::get('limit',10);
         $search = Input::get('search');
         if ($search){
-            $data = ProxyApply::where('name','like',$search)->where('phone','like','%'.$search.'%')->limit($limit)->offset(($page-1)*$limit)->get();
+//            dd($search);
+            $data = ProxyApply::where('name','like','%'.$search.'%')->orWhere('phone','like','%'.$search.'%')->limit($limit)->offset(($page-1)*$limit)->get();
         }else{
             $data = ProxyApply::limit($limit)->offset(($page-1)*$limit)->get();
         }
