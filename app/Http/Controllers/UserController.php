@@ -589,7 +589,7 @@ class UserController extends Controller
     {
         $id = Input::get('id');
         $user = WeChatUser::find($id);
-        $parent = WeChatUser::find($user->proxy_id);
+        $parent = [WeChatUser::find($user->proxy_id)];
         $sons  = WeChatUser::where('proxy_id','=',$user->id)->get();
         return response()->json([
             'msg'=>'ok',
