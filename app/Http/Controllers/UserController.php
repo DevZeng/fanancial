@@ -190,7 +190,8 @@ class UserController extends Controller
         $count = $dbObj->count();
         $name = Input::get('search');
         if ($name){
-            $dbObj->where('nickname','like','%'.$name.'%')->where('phone','like','%'.$name.'%');
+            $dbObj->where('nickname','like','%'.$name.'%')->orWhere('phone','like','%'.$name.'%');
+            $count = $dbObj->count();
         }
         $data = $dbObj->limit($limit)->offset(($page-1)*$limit)->get();
         foreach ($data as $datum){
