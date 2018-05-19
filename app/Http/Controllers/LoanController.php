@@ -85,9 +85,22 @@ class LoanController extends Controller
     public function listLoans()
     {
         $search = Input::get('search');
+        $start = Input::get('start');
+        $end = Input::get('end');
+        $state = Input::get('state');
+        $pay = Input::get('pay');
         $db = DB::table('loans');
         if ($search){
             $db->where('name','=',$search)->orWhere('phone','=',$search);
+        }
+        if ($start){
+            $db->whereBetween('created_at',[$start,$end]);
+        }
+        if ($state){
+            $db->where('state','=',$state);
+        }
+        if ($pay){
+            $db->where('pay','=',$pay);
         }
         $data = $db->orderBy('id','DESC')->get();
         return response()->json([

@@ -43,6 +43,7 @@ Route::group(['middleware'=>'cross'],function (){
     Route::get('business/{id}','BusinessController@getBusiness');
     Route::get('types','BusinessController@getTypes');
     Route::get('users','UserController@listUsers');
+    Route::get('admins','UserController@listAdmin');
     Route::post('user','UserController@createUser');
     Route::get('agents','UserController@listAgents');
     Route::get('applies','UserController@listApplies');

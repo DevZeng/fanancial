@@ -52,8 +52,15 @@ class UserController extends Controller
     }
     public function roles()
     {
-        $count = Role::count();
-        $roles = Role::all();
+        $search = Input::get('search');
+        if ($search){
+            $count = Role::where('display_name','like','%'.$search.'%')->count();
+            $roles = Role::where('display_name','like','%'.$search.'%')->get();
+        }else{
+            $count = Role::count();
+            $roles = Role::all();
+        }
+
         return response()->json([
             'msg'=>'ok',
             'count'=>$count,
@@ -170,11 +177,12 @@ class UserController extends Controller
         $page = Input::get('page',1);
         $limit = Input::get('limit',10);
         $dbObj = WeChatUser::where('level','=','D');
-        $count = $dbObj->count();
         $name = Input::get('search');
         if ($name){
-            $dbObj->where('name','like','%'.$name.'%')->where('phone','like','%'.$name.'%');
+            $dbObj->where('nickname','like','%'.$name.'%')->orWhere('phone','like','%'.$name.'%');
+//            $count = $dbObj->count();
         }
+        $count = $dbObj->count();
         $data = $dbObj->limit($limit)->offset(($page-1)*$limit)->get();
         return response()->json([
             'msg'=>'ok',
@@ -614,6 +622,24 @@ class UserController extends Controller
             'msg'=>'ok',
             'count'=>$count,
             'data'=>$record
+        ]);
+    }
+    public function listAdmin()
+    {
+        $search = Input::get('search');
+        $limit = Input::get('limit',10);
+        $page = Input::get('page',1);
+        if ($search){
+            $data = User::where('name','like','%'.$search.'%')->limit($limit)->offset(($page-1)*$limit)->get();
+            $count = User::where('name','like','%'.$search.'%')->count();
+        }else{
+            $data = User::limit($limit)->offset(($page-1)*$limit)->get();
+            $count = User::count();
+        }
+        return response()->json([
+            'msg'=>'ok',
+            'count'=>$count,
+            'data'=>$data
         ]);
     }
 }
