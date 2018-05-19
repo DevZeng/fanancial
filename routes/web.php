@@ -15,7 +15,9 @@ Route::options('{all}',function (){return 'ok';})->middleware('cross');
 //Route::options('{all}/{all}',function (){return 'ok';})->middleware('cross');
 
 Route::get('test',function (){
-    return uniqid();
+    $date = '2018-4';
+    return date('Y',strtotime($date)).date('m',strtotime($date));
+//    return uniqid();
 });
 Route::post('permission','UserController@createPermission');
 Route::get('permissions','UserController@getPermissions');
@@ -48,11 +50,16 @@ Route::group(['middleware'=>'cross'],function (){
     Route::get('messages','UserController@searchMessage');
     Route::get('loans','LoanController@listLoans');
     Route::get('loan/{id}','LoanController@getLoan');
-    Route::get('agent/{id}','UserController@getProxy');
+//    Route::get('agent/{id}','UserController@getProxy');
     Route::get('pay/loan/{id}','LoanController@payLoan');
     Route::get('change/loan/{id}','LoanController@changeLoanState');
     Route::post('loan/brokerage','LoanController@modifyLoanBrokerage');
     Route::get('brokerages','LoanController@listBrokerage');
+    Route::get('user/data','UserController@userData');
+    Route::get('user/withdraw/list','UserController@listWithoutRecord');
+    Route::get('withdraw/{id}','UserController@payApply');
+    Route::get('tree/agents','UserController@listAgentTree');
+    Route::get('agent/record','UserController@listAgentRecord');
 //    Route::group(['middleware'=>'auth'],function (){
 //        Route::post('banner','BannerController@createBanner');
 //        Route::delete('banner/{id}','BannerController@delBanner');

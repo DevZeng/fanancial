@@ -260,5 +260,19 @@ class LoanController extends Controller
             'data'=>$list
         ]);
     }
+    public function myBrokerage()
+    {
+        $uid = getUserToken(Input::get('token'));
+        $date = Input::get('date');
+        $db = BrokerageLog::where('proxy_id','=',$uid)->where('state','=',0)->whereYear('created_at',date('Y',strtotime($date)))->whereMonth('created_at', date('m',strtotime($date)));
+        return response()->json([
+            'msg'=>'ok',
+            'data'=>[
+                'amount'=>$db->sum('brokerage'),
+                'direct'=>$db->where('type','=',1)->sum('brokerage'),
+                'proxy'=>$db->where('type','=',2)->sum('brokerage')
+            ]
+        ]);
+    }
 
 }

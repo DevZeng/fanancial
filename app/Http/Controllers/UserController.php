@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginPost;
 use App\Libraries\Wxxcx;
+use App\Models\BrokerageLog;
+use App\Models\Loan;
 use App\Models\Message;
 use App\Models\Permission;
 use App\Models\ProxyApply;
@@ -191,6 +193,17 @@ class UserController extends Controller
             $dbObj->where('name','like','%'.$name.'%')->where('phone','like','%'.$name.'%');
         }
         $data = $dbObj->limit($limit)->offset(($page-1)*$limit)->get();
+        foreach ($data as $datum){
+            $datum->level = $datum->level == 'A'?'B':$datum->level;
+            $datum->registerCount = WeChatUser::where('proxy_id','=',$datum->id)->count();
+            $datum->loanCount = Loan::where('proxy_id','=',$datum->id)->where('state','=',3)->count();
+            $datum->loanPersonCount = count(Loan::where('proxy_id','=',$datum->id)->where('state','=',3)->groupBy('user_id')->pluck('user_id'));
+            $datum->loanSum = Loan::where('proxy_id','=',$datum->id)->where('state','=',3)->sum('price');
+            $datum->brokerage = BrokerageLog::where('user_id','=',$datum->id)->sum('brokerage');
+            $datum->pay = BrokerageLog::where('user_id','=',$datum->id)->where('state','=',1)->sum('brokerage');
+            $datum->need = BrokerageLog::where('user_id','=',$datum->id)->where('state','=',0)->sum('brokerage');
+            $datum->bank = ProxyApply::where('state','=',2)->where('user_id','=',$datum->id)->pluck('account')->first();
+        }
         return response()->json([
             'msg'=>'ok',
             'count'=>$count,
@@ -365,20 +378,20 @@ class UserController extends Controller
         ]);
     }
 //    public function crea
-    public function getProxy($id)
-    {
-//        $id = Input::get('id');
-        $user = WeChatUser::find($id);
-        $user->proxy = $user->proxy()->first();
-        $lists = WeChatUser::where('proxy_id','=',$id)->get();
-        return response()->json([
-            'msg'=>'ok',
-            'data'=>[
-                'user'=>$user,
-                'list'=>$lists
-            ]
-        ]);
-    }
+//    public function getProxy($id)
+//    {
+////        $id = Input::get('id');
+//        $user = WeChatUser::find($id);
+//        $user->proxy = $user->proxy()->first();
+//        $lists = WeChatUser::where('proxy_id','=',$id)->get();
+//        return response()->json([
+//            'msg'=>'ok',
+//            'data'=>[
+//                'user'=>$user,
+//                'list'=>$lists
+//            ]
+//        ]);
+//    }
     public function scan()
     {
         $id = Input::get('id');
@@ -484,5 +497,121 @@ class UserController extends Controller
                 'msg'=>'ok'
             ]);
         }
+    }
+    public function myData()
+    {
+        $uid = getUserToken(Input::get('token'));
+        $personCount = WeChatUser::where('proxy_id','=',$uid)->count();
+        $loanCount = Loan::where('proxy_id','=',$uid)->where('state','=',3)->count();
+        $loanSum = Loan::where('proxy_id','=',$uid)->where('state','=',3)->sum('price');
+        $loanUserCount = count(Loan::where('proxy_id','=',$uid)->groupBy('user_id')->pluck('user_id'));
+        return response()->json([
+            'msg'=>'ok',
+            'data'=>[
+                'personCount'=>$personCount,
+                'loanCount'=>$loanCount,
+                'loanSum'=>$loanSum,
+                'loanUserCount'=>$loanUserCount
+            ]
+        ]);
+    }
+    public function userData()
+    {
+        $date = Input::get('date');
+        $limit = Input::get('limit',10);
+        $page = Input::get('page',1);
+        $count = WeChatUser::where('level','!=','D')->count();
+        $proxys = WeChatUser::where('level','!=','D')->limit($limit)->offset(($page-1)*$limit)->get();
+        foreach ($proxys as $proxy){
+            $proxy->level = $proxy->level == 'A'?'B':$proxy->level;
+            $proxy->scanCount = ScanRecord::where('proxy_id','=',$proxy->id)->whereYear('created_at',date('Y',strtotime($date)))->whereMonth('created_at', date('m',strtotime($date)))->count();
+            $proxy->registerCount = WeChatUser::where('proxy_id','=',$proxy->id)->whereYear('created_at',date('Y',strtotime($date)))->whereMonth('created_at', date('m',strtotime($date)))->count();
+            $proxy->loanCount = Loan::where('proxy_id','=',$proxy->id)->where('state','=',3)->whereYear('created_at',date('Y',strtotime($date)))->whereMonth('created_at', date('m',strtotime($date)))->count();
+            $proxy->loanPersonCount = count(Loan::where('proxy_id','=',$proxy->id)->where('state','=',3)->whereYear('created_at',date('Y',strtotime($date)))->whereMonth('created_at', date('m',strtotime($date)))->groupBy('user_id')->pluck('user_id'));
+            $proxy->loanSum = Loan::where('proxy_id','=',$proxy->id)->where('state','=',3)->whereYear('created_at',date('Y',strtotime($date)))->whereMonth('created_at', date('m',strtotime($date)))->sum('brokerage');
+            $proxy->brokerage = BrokerageLog::where('user_id','=',$proxy->id)->whereYear('created_at',date('Y',strtotime($date)))->whereMonth('created_at', date('m',strtotime($date)))->sum('brokerage');
+            $proxy->pay = BrokerageLog::where('user_id','=',$proxy->id)->where('state','=',1)->whereYear('created_at',date('Y',strtotime($date)))->whereMonth('created_at', date('m',strtotime($date)))->sum('brokerage');
+            $proxy->need = BrokerageLog::where('user_id','=',$proxy->id)->where('state','=',0)->whereYear('created_at',date('Y',strtotime($date)))->whereMonth('created_at', date('m',strtotime($date)))->sum('brokerage');
+        }
+        return response()->json([
+            'msg'=>'ok',
+            'count'=>$count,
+            'data'=>$proxys
+        ]);
+    }
+    public function myWithoutRecord()
+    {
+        $uid = getUserToken(Input::get('token'));
+        $limit = Input::get('limit',10);
+        $page = Input::get('page',1);
+        $lists = WithdrawApply::where('user_id','=',$uid)->limit($limit)->offset(($page-1)*$limit)->orderBy('id','DESC')->get();
+        return response()->json([
+            'msg'=>'ok',
+            'data'=>$lists
+        ]);
+    }
+    public function listWithoutRecord()
+    {
+        $limit = Input::get('limit',10);
+        $page = Input::get('page',1);
+        $date = Input::get('date');
+        if ($date){
+            $count = WithdrawApply::where('date','=',$date)->count();
+            $list = WithdrawApply::where('date','=',$date)->limit($limit)->offset(($page-1)*$limit)->orderBy('id','DESC')->get();
+        }else{
+            $count = WithdrawApply::count();
+            $list = WithdrawApply::limit($limit)->offset(($page-1)*$limit)->orderBy('id','DESC')->get();
+        }
+
+        foreach ($list as $item){
+            $item->nickname = WeChatUser::find($item->user_id)->nickname;
+            $item->name = WeChatUser::find($item->user_id)->name;
+            $item->amount = BrokerageLog::where('user_id','=',$item->user_id)->where('state','=',0)->whereYear('created_at',date('Y',strtotime($date)))->whereMonth('created_at', date('m',strtotime($date)))->sum('brokerage');
+        }
+        return response()->json([
+            'msg'=>'ok',
+            'count'=>$count,
+            'data'=>$list
+        ]);
+    }
+    public function payApply($id)
+    {
+        $apply = WithdrawApply::find($id);
+        $apply->state = 1;
+        if ($apply->save()){
+            BrokerageLog::where('user_id','=',$apply->user_id)->where('state','=',0)->whereYear('created_at',date('Y',strtotime($apply->date)))->whereMonth('created_at', date('m',strtotime($apply->date)))->update(['state'=>1]);
+        }
+        return response()->json([
+            'msg'=>'ok'
+        ]);
+    }
+    public function listAgentTree()
+    {
+        $id = Input::get('id');
+        $user = WeChatUser::find($id);
+        $parent = WeChatUser::find($user->proxy_id);
+        $sons  = WeChatUser::where('proxy_id','=',$user->id)->get();
+        return response()->json([
+            'msg'=>'ok',
+            'data'=>[
+                'parent'=>$parent,
+                'sons'=>$sons
+            ]
+        ]);
+    }
+    public function listAgentRecord()
+    {
+//        dd(Input::all());
+        $id = Input::get('id');
+        $limit = Input::get('limit',10);
+        $page = Input::get('page',1);
+        $count = BrokerageLog::where('user_id','=',$id)->count();
+//        dd($count);
+        $record = BrokerageLog::where('user_id','=',$id)->limit($limit)->offset(($page-1)*$limit)->orderBy('id','DESC')->get();
+        return response()->json([
+            'msg'=>'ok',
+            'count'=>$count,
+            'data'=>$record
+        ]);
     }
 }
