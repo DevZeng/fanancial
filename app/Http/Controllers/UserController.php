@@ -636,6 +636,12 @@ class UserController extends Controller
             $data = User::limit($limit)->offset(($page-1)*$limit)->get();
             $count = User::count();
         }
+        if (!empty($data)){
+            foreach ($data as $datum){
+                $role = RoleUser::where('user_id','=',$datum->id)->pluck('role_id');
+                $datum->role = Role::find($role)->display_name;
+            }
+        }
         return response()->json([
             'msg'=>'ok',
             'count'=>$count,
