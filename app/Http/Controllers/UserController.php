@@ -639,8 +639,7 @@ class UserController extends Controller
         if (!empty($data)){
             foreach ($data as $datum){
                 $role = RoleUser::where('user_id','=',$datum->id)->pluck('role_id')->first();
-                dd($role);
-                $datum->role = Role::find($role)->display_name;
+                $datum->role = empty($role)?Role::find($role)->display_name:'无权限';
             }
         }
         return response()->json([
