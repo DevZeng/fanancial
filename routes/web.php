@@ -23,6 +23,7 @@ Route::post('permission','UserController@createPermission');
 Route::get('permissions','UserController@getPermissions');
 Route::post('role','UserController@createRole');
 Route::get('roles','UserController@roles');
+Route::get('role/{id}','UserController@getRole');
 Route::group(['middleware'=>'cross'],function (){
     Route::post('login','UserController@login');
     Route::get('access/token','UserController@get_qrcode');
@@ -44,6 +45,7 @@ Route::group(['middleware'=>'cross'],function (){
     Route::get('types','BusinessController@getTypes');
     Route::get('users','UserController@listUsers');
     Route::get('admins','UserController@listAdmin');
+    Route::get('admin/{id}','UserController@getAdmin');
     Route::post('user','UserController@createUser');
     Route::get('agents','UserController@listAgents');
     Route::get('applies','UserController@listApplies');
@@ -51,6 +53,7 @@ Route::group(['middleware'=>'cross'],function (){
     Route::get('messages','UserController@searchMessage');
     Route::get('loans','LoanController@listLoans');
     Route::get('loan/{id}','LoanController@getLoan');
+    Route::post('loan','LoanController@editLoan');
 //    Route::get('agent/{id}','UserController@getProxy');
     Route::get('pay/loan/{id}','LoanController@payLoan');
     Route::get('change/loan/{id}','LoanController@changeLoanState');

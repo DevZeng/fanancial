@@ -95,7 +95,7 @@ class LoanController extends Controller
             $db->where('name','=',$search)->orWhere('phone','=',$search);
         }
         if ($number){
-            $db->where('number','=',$number);
+            $db->where('number','like','%'.$number.'%');
         }
         if ($start){
             $db->whereBetween('created_at',[$start,$end]);
@@ -124,6 +124,21 @@ class LoanController extends Controller
             'msg'=>'ok',
             'data'=>$loan
         ]);
+    }
+    public function editLoan(Request $post)
+    {
+        $id = $post->id;
+        $loan = Loan::findOrFail($id);
+        $loan->name = $post->name?$post->name:$loan->name;
+        $loan->phone = $post->phone?$post->phone:$loan->phone;
+        $loan->price = $post->price?$post->price:$loan->price;
+        $loan->business_id = $post->business_id?$post->business_id:$loan->business_id;
+        $loan->remark = $post->remark?$post->remark:$loan->remark;
+        if ($loan->save()){
+            return response()->json([
+                'msg'=>'ok'
+            ]);
+        }
     }
     public function changeLoanState($id)
     {

@@ -185,10 +185,15 @@ class UserController extends Controller
         $page = Input::get('page',1);
         $limit = Input::get('limit',10);
         $dbObj = WeChatUser::where('level','=','D');
-        $name = Input::get('search');
+        $name = Input::get('name');
+        $phone = Input::get('phone');
         if ($name){
-            $dbObj->where('nickname','like','%'.$name.'%')->orWhere('phone','like','%'.$name.'%');
+//            dd($name);
+            $dbObj->where('nickname','like','%'.$name.'%');
 //            $count = $dbObj->count();
+        }
+        if ($phone){
+            $dbObj->where('phone','like','%'.$phone.'%');
         }
         $count = $dbObj->count();
         $data = $dbObj->limit($limit)->offset(($page-1)*$limit)->get();
@@ -203,12 +208,17 @@ class UserController extends Controller
         $page = Input::get('page',1);
         $limit = Input::get('limit',10);
         $dbObj = WeChatUser::where('level','!=','D');
-        $count = $dbObj->count();
-        $name = Input::get('search');
+        $phone = Input::get('phone');
+
+        $name = Input::get('name');
         if ($name){
-            $dbObj->where('nickname','like','%'.$name.'%')->orWhere('phone','like','%'.$name.'%');
+            $dbObj->where('nickname','like','%'.$name.'%');
             $count = $dbObj->count();
         }
+        if ($phone){
+            $dbObj->where('phone','like','%'.$name.'%');
+        }
+        $count = $dbObj->count();
         $data = $dbObj->limit($limit)->offset(($page-1)*$limit)->get();
         foreach ($data as $datum){
             $datum->level = $datum->level == 'A'?'B':$datum->level;
@@ -376,20 +386,22 @@ class UserController extends Controller
     {
         $id = $post->id;
         if ($id){
-
+            $user = User::find($id);
+            RoleUser::where('user_id','=',$user->id)->delete();
         }else{
             $user = new User();
-            $user->name = $post->name;
-            $user->phone = $post->phone;
-            $user->username = $post->username;
-            $user->password = bcrypt($post->password);
-            $user->save();
-            if ($post->role_id){
-                $roleUser = new RoleUser();
-                $roleUser->role_id = $post->role_id;
-                $roleUser->user_id = $user->id;
-                $roleUser->save();
-            }
+
+        }
+        $user->name = $post->name;
+        $user->phone = $post->phone;
+        $user->username = $post->username;
+        $user->password = bcrypt($post->password);
+        $user->save();
+        if ($post->role_id){
+            $roleUser = new RoleUser();
+            $roleUser->role_id = $post->role_id;
+            $roleUser->user_id = $user->id;
+            $roleUser->save();
         }
         return response()->json([
             'msg'=>'ok'
@@ -668,5 +680,33 @@ class UserController extends Controller
                 ]
             ]);
         }
+    }
+    public function getAdmin($id)
+    {
+        $admin = User::find($id);
+        $role = RoleUser::where('user_id','=',$admin->id)->pluck('role_id')->first();
+        if ($role){
+            $admin->role_id = $role;
+            $admin->role_name = Role::find($role)->display_name;
+        }else{
+            $admin->role_id = 0;
+            $admin->role_name = '无任何权限';
+        }
+
+        return response()->json([
+            'msg'=>'ok',
+            'data'=>$admin
+        ]);
+    }
+    public function getRole($id)
+    {
+        $role = Role::find($id);
+        $permissions = RolePermission::where('role_id','=',$role->id)->pluck('permission_id')->toArray();
+//        dd($permissions);
+        $role->permissions = Permission::whereIn('id',$permissions)->get();
+        return response()->json([
+            'msg'=>'ok',
+            'data'=>$role
+        ]);
     }
 }
