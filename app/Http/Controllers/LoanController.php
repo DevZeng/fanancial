@@ -38,7 +38,7 @@ class LoanController extends Controller
         $loan->price = $post->price?$post->price:$loan->price;
         $loan->business_id = $post->business_id?$post->business_id:$loan->business_id;
         $loan->brokerage = $business->brokerage?$business->brokerage:$loan->brokerage;
-        $loan->state = $post->state?$post->state:$loan->state;
+        $loan->state = $post->state?$post->state:1;
         $loan->save();
         return response()->json([
             'msg'=>'ok',
@@ -89,9 +89,13 @@ class LoanController extends Controller
         $end = Input::get('end');
         $state = Input::get('state');
         $pay = Input::get('pay');
+        $number = Input::get('number');
         $db = DB::table('loans');
         if ($search){
             $db->where('name','=',$search)->orWhere('phone','=',$search);
+        }
+        if ($number){
+            $db->where('number','=',$number);
         }
         if ($start){
             $db->whereBetween('created_at',[$start,$end]);
