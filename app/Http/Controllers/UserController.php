@@ -709,4 +709,14 @@ class UserController extends Controller
             'data'=>$role
         ]);
     }
+    public function modifyAgent(Request $post)
+    {
+        $id = $post->id;
+        $agent = WeChatUser::find($id);
+        $agent->remark = $post->remark?$post->remark:$agent->remark;
+        $agent->save();
+        return response()->json([
+            'msg'=>'ok'
+        ]);
+    }
 }

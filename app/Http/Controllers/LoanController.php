@@ -122,6 +122,7 @@ class LoanController extends Controller
     public function getLoan($id)
     {
         $loan = Loan::findOrFail($id);
+        $loan->log = LoanLog::where('loan_id','=',$loan->id)->get();
         return response()->json([
             'msg'=>'ok',
             'data'=>$loan
@@ -144,14 +145,22 @@ class LoanController extends Controller
     }
     public function changeLoanState($id)
     {
+//        dd(Input::all());
         $loan = Loan::find($id);
         if ($loan->state==1){
             $loan->state = 2;
             $log = new LoanLog();
+//            dd($loan);
             $log->user_id = Auth::id();
             $log->loan_id = $id;
             $log->detail = '状态由待处理变成处理中';
+//            dd(Auth::id());
+//            dd(Input::all());
+//            $user = Auth::user();
+//            dd($user);
             $log->username = Auth::user()->username;
+//            $user = Auth::user();
+//            dd($user);
             $log->save();
         }elseif ($loan->state==2){
             $loan->state = 3;
@@ -159,6 +168,8 @@ class LoanController extends Controller
             $log->user_id = Auth::id();
             $log->loan_id = $id;
             $log->detail = '状态由处理中变成已完成';
+//            $user = Auth::user();
+//            dd($user);
             $log->username = Auth::user()->username;
             $log->save();
         }else{

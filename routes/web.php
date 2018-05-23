@@ -19,12 +19,13 @@ Route::get('test',function (){
     return date('Y',strtotime($date)).date('m',strtotime($date));
 //    return uniqid();
 });
-Route::post('permission','UserController@createPermission');
-Route::get('permissions','UserController@getPermissions');
-Route::post('role','UserController@createRole');
-Route::get('roles','UserController@roles');
-Route::get('role/{id}','UserController@getRole');
 Route::group(['middleware'=>'cross'],function (){
+
+    Route::post('permission','UserController@createPermission');
+    Route::get('permissions','UserController@getPermissions');
+    Route::post('role','UserController@createRole');
+    Route::get('roles','UserController@roles');
+    Route::get('role/{id}','UserController@getRole');
     Route::post('login','UserController@login');
     Route::get('access/token','UserController@get_qrcode');
     Route::get('logout','UserController@logout');
@@ -48,6 +49,7 @@ Route::group(['middleware'=>'cross'],function (){
     Route::get('admin/{id}','UserController@getAdmin');
     Route::post('user','UserController@createUser');
     Route::get('agents','UserController@listAgents');
+    Route::post('agent','UserController@modifyAgent');
     Route::get('applies','UserController@listApplies');
     Route::get('check/apply','UserController@checkApply');
     Route::get('messages','UserController@searchMessage');
