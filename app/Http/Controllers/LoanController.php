@@ -6,12 +6,14 @@ use App\Models\Assess;
 use App\Models\BrokerageLog;
 use App\Models\Business;
 use App\Models\Loan;
+use App\Models\LoanLog;
 use App\Models\ProxyRatio;
 use App\Models\Rate;
 use App\Models\SysConfig;
 use App\Models\WeChatUser;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Mockery\Exception;
@@ -145,10 +147,21 @@ class LoanController extends Controller
         $loan = Loan::find($id);
         if ($loan->state==1){
             $loan->state = 2;
+            $log = new LoanLog();
+            $log->user_id = Auth::id();
+            $log->loan_id = $id;
+            $log->detail = '状态由待处理变成处理中';
+            $log->username = Auth::user()->username;
+            $log->save();
         }elseif ($loan->state==2){
             $loan->state = 3;
+            $log = new LoanLog();
+            $log->user_id = Auth::id();
+            $log->loan_id = $id;
+            $log->detail = '状态由处理中变成已完成';
+            $log->username = Auth::user()->username;
+            $log->save();
         }else{
-
         }
         $loan->save();
         return response()->json([
@@ -207,6 +220,12 @@ class LoanController extends Controller
 //                dd($list);
             }
             DB::commit();
+            $log = new LoanLog();
+            $log->user_id = Auth::id();
+            $log->loan_id = $id;
+            $log->detail = '发放贷款';
+            $log->username = Auth::user()->username;
+            $log->save();
             return response()->json([
                 'msg'=>'ok'
             ]);
