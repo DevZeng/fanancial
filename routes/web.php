@@ -61,6 +61,7 @@ Route::group(['middleware'=>'cross'],function (){
     Route::get('withdraw/{id}','UserController@payApply');
     Route::get('tree/agents','UserController@listAgentTree');
     Route::get('agent/record','UserController@listAgentRecord');
+    Route::delete('user/{id}','UserController@disableUser');
 //    Route::group(['middleware'=>'auth'],function (){
 //        Route::post('banner','BannerController@createBanner');
 //        Route::delete('banner/{id}','BannerController@delBanner');

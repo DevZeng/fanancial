@@ -103,6 +103,11 @@ class LoanController extends Controller
             $db->where('pay','=',$pay);
         }
         $data = $db->orderBy('id','DESC')->get();
+        if (!empty($data)){
+            foreach ($data as $datum){
+                $datum->business = Business::find($datum->business_id)->name;
+            }
+        }
         return response()->json([
             'msg'=>'ok',
             'data'=>$data

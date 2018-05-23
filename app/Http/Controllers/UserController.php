@@ -92,12 +92,20 @@ class UserController extends Controller
                 $user->open_id = $userData->openId;
                 $user->nickname = $userData->nickName;
                 $user->avatarUrl = $userData->avatarUrl;
+                if ($post->proxyid){
+                    $user->proxy_id = $post->proxyid;
+                }
                 $user->save();
                 $token = CreateNonceStr(10);
                 setUserToken($token,$user->id);
             }else{
 //                $user->flag = 1;
 //                $user->save();
+                if($user->state==0){
+                    return response()->json([
+                        'msg'=>'用户已被禁用！'
+                    ]);
+                }
                 $token = CreateNonceStr(10);
                 setUserToken($token,$user->id);
             }
@@ -647,5 +655,18 @@ class UserController extends Controller
             'count'=>$count,
             'data'=>$data
         ]);
+    }
+    public function disableUser($id)
+    {
+        $user = WeChatUser::find($id);
+        $user->state = $user->state==1?0:1;
+        if ($user->save()){
+            return response()->json([
+                'msg'=>'ok',
+                'data'=>[
+                    'state'=>$user->state
+                ]
+            ]);
+        }
     }
 }
