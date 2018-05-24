@@ -344,17 +344,25 @@ class UserController extends Controller
     }
     //获得二维码
     public function get_qrcode() {
+//        $app = new Wxxcx(config('wxxcx.app_id'),config('wxxcx.app_secret'));
+//        $access_token = $app->getAccessToken();
+//        dd($access_token);
         $uid = getUserToken(Input::get('token'));
-        header('content-type:image/gif');
+//        header('content-type:image/gif');
         //header('content-type:image/png');格式自选，不同格式貌似加载速度略有不同，想加载更快可选择jpg
-        //header('content-type:image/jpg');
+        header('content-type:image/jpg');
         $data = array();
         $data['scene'] = "proxy=" . $uid;
 //        $data['page'] = "pages/agentinfo/agentinfo";
         $data = json_encode($data);
         $access = json_decode($this->get_access_token(),true);
+//        dd($access);
+//        $access = json_decode($access,true);
+//        dd($access);
         $access_token= $access['access_token'];
         $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" . $access_token;
+//        dd($url);
+        //        $app->request($url,$data);
         $da = $this->get_http_array($url,$data);
     }
     public function get_http_array($url,$post_data) {
@@ -375,13 +383,14 @@ class UserController extends Controller
         $apply = ProxyApply::findOrFail($id);
         $state = Input::get('state');
         if ($state==1){
-            $apply->state = 0;
-        }else{
-            $apply->state = 2;
+            $apply->state = 1;
             $user = WeChatUser::find($apply->user_id);
             $user->level = 'C';
 //            $user->code= uniqid();
             $user->save();
+        }else{
+            $apply->state = 2;
+
         }
         $apply->save();
         return response()->json([
