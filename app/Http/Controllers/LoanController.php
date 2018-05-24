@@ -65,8 +65,8 @@ class LoanController extends Controller
             foreach ($loan as $item){
 //                dd($item);
                 $business = Business::find($item->business_id);
-                dd($business);
-                $item->business = $item->business_id?Business::find($item->business_id)->name:'无数据';
+//                dd($business);
+                $item->business = $business?$business->name:'无数据';
             }
         }
         return response()->json([
