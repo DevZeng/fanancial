@@ -96,16 +96,13 @@ class UserController extends Controller
                     $user->proxy_id = $post->proxyid;
                 }
                 $user->save();
+                $user->apply = 0;
                 $token = CreateNonceStr(10);
                 setUserToken($token,$user->id);
             }else{
 //                $user->flag = 1;
 //                $user->save();
-                if($user->state==0){
-                    return response()->json([
-                        'msg'=>'用户已被禁用！'
-                    ]);
-                }
+                $user->apply = ProxyApply::where('user_id','=',$user->id)->where('state','!=',2)->count();
                 $token = CreateNonceStr(10);
                 setUserToken($token,$user->id);
             }

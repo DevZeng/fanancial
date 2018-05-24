@@ -24,6 +24,12 @@ class LoanController extends Controller
     public function createLoan(Request $post)
     {
         $uid = getUserToken($post->token);
+        $user = WeChatUser::find($uid);
+        if($user->state==0){
+            return response()->json([
+                'msg'=>'用户已被禁用！'
+            ]);
+        }
         $business = Business::find($post->business_id);
         $count = Loan::whereDate('created_at', date('Y-m-d', time()))->count();
         $date = date('Y-m-d H:i:s');
@@ -39,6 +45,7 @@ class LoanController extends Controller
         $loan->phone = $post->phone?$post->phone:$loan->phone;
         $loan->price = $post->price?$post->price:$loan->price;
         $loan->business_id = $post->business_id?$post->business_id:$loan->business_id;
+        $loan->business = Business::find($post->business_id)->name;
         $loan->brokerage = $business->brokerage?$business->brokerage:$loan->brokerage;
         $loan->state = $post->state?$post->state:1;
         $loan->save();
@@ -61,14 +68,14 @@ class LoanController extends Controller
         $limit = Input::get('limit',10);
         $page = Input::get('page',1);
         $loan = Loan::where('user_id','=',$uid)->where('state','=',$state)->limit($limit)->offset(($page-1)*$limit)->get();
-        if (!empty($loan)){
-            foreach ($loan as $item){
-//                dd($item);
-                $business = Business::find(3);
-//                dd($business);
-                $item->business = $business?$business->name:'无数据';
-            }
-        }
+//        if (!empty($loan)){
+//            foreach ($loan as $item){
+////                dd($item);
+//                $business = Business::find($item->business_id);
+////                dd($business);
+//                $item->business = $business?$business->name:'无数据';
+//            }
+//        }
         return response()->json([
             'msg'=>'ok',
             'data'=>$loan
