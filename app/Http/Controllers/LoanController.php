@@ -63,6 +63,7 @@ class LoanController extends Controller
         $loan = Loan::where('user_id','=',$uid)->where('state','=',$state)->limit($limit)->offset(($page-1)*$limit)->get();
         if (!empty($loan)){
             foreach ($loan as $item){
+                dd($item);
                 $item->business = $item->business_id?Business::find($item->business_id)->name:'无数据';
             }
         }
