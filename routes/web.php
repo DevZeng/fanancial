@@ -21,6 +21,7 @@ Route::get('test',function (){
 });
 Route::post('login','UserController@login');
 Route::get('logout','UserController@logout');
+Route::post('upload','SystemController@upload');
 Route::group(['middleware'=>['cross','auth']],function (){
 
     Route::post('permission','UserController@createPermission');
@@ -33,7 +34,7 @@ Route::group(['middleware'=>['cross','auth']],function (){
 
     Route::get('access/token','UserController@get_qrcode');
 
-    Route::post('upload','SystemController@upload');
+
     Route::get('config','SystemController@getConfig');
     Route::post('config','SystemController@editConfig');
 
