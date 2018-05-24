@@ -61,9 +61,29 @@ class LoanController extends Controller
         $limit = Input::get('limit',10);
         $page = Input::get('page',1);
         $loan = Loan::where('user_id','=',$uid)->where('state','=',$state)->limit($limit)->offset(($page-1)*$limit)->get();
+        if (!empty($loan)){
+            foreach ($loan as $item){
+                $item->business = Business::find($item->business_id)->name;
+            }
+        }
         return response()->json([
             'msg'=>'ok',
             'data'=>$loan
+        ]);
+    }
+    public function cancelLoan($id)
+    {
+        $uid = getUserToken(Input::get('token'));
+        $loan = Loan::find($id);
+        if ($loan->user_id != $uid){
+            return response()->json([
+                'msg'=>'无权操作！'
+            ],403);
+        }
+        $loan->state = 0;
+        $loan->save();
+        return response()->json([
+            'msg'=>'ok'
         ]);
     }
     public function myLoanCount()

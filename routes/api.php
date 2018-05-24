@@ -27,6 +27,7 @@ Route::group(['middleware'=>'wx'],function (){
    Route::get('apply','UserController@getApply');
    Route::post('loan','LoanController@createLoan');
    Route::get('loans','LoanController@myLoans');
+   Route::delete('loan/{id}','LoanController@cancelLoan');
    Route::get('loans/count','LoanController@myLoanCount');
    Route::get('qrcode','UserController@get_qrcode');
    Route::get('scan','UserController@scan');

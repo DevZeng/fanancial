@@ -278,9 +278,7 @@ class UserController extends Controller
 
         return $curl->response;
         $qrcode = $wx->request('https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token='.$data['access_token'],$requestData);
-        return response()->make($qrcode,200,['content-type:image/gif']) ;
-        dd($qrcode);
-        dd($data);
+        return response()->make($qrcode,200,['content-type:image/gif']);
     }
     //获取access_token
     public function get_access_token(){
