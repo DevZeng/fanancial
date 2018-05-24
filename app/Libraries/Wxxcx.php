@@ -67,7 +67,6 @@ class Wxxcx
         if(!isset($access_token['access_token'])){
             return false;
         }
-//        $this->sessionKey = $userInfo['session_key'];
         return $access_token;
     }
 }

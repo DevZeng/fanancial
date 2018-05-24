@@ -36,19 +36,41 @@ class UserController extends Controller
         if (Auth::attempt(['username'=>$username,'password'=>$password],true)){
             $role = RoleUser::where('user_id','=',Auth::id())->pluck('role_id')->first();
             $idArr = RolePermission::where('role_id','=',$role)->pluck('permission_id')->toArray();
-            $permissions = Permission::whereIn('id',$idArr)->get();
+//            $permissions = Permission::whereIn('id',$idArr)->pluck('id')->toArray();
             return response()->json([
                 'msg'=>'ok',
                 'data'=>[
                     'token'=>csrf_token(),
-                    'permissions'=>$permissions,
-                    'name'=>Auth::user()->username
+                    'permissions'=>$idArr,
+                    'name'=>Auth::user()->username,
+                    'count'=>Loan::where('state','=',1)->count()
                 ]
             ]);
         }
         return response()->json([
             'msg'=>'用户名或密码错误！'
         ],422);
+    }
+    public function countLoan()
+    {
+//        Loan::where('state','=',1)->count()
+        return response()->json([
+            'msg'=>'ok',
+            'data'=>[
+                'count'=>Loan::where('state','=',1)->count()
+            ]
+        ]);
+    }
+    public function deleteRole($id)
+    {
+        $role = Role::find($id);
+        if ($role->delete()){
+            RolePermission::where('role_id','=',$id)->delete();
+            RoleUser::where('role_id','=',$id)->delete();
+            return response()->json([
+                'msg'=>'ok'
+            ]);
+        }
     }
     public function roles()
     {
@@ -119,6 +141,16 @@ class UserController extends Controller
             'message'=>$sessionKey
         ],400);
     }
+    public function deleteAdmin($id)
+    {
+        $user = User::find($id);
+        RoleUser::where('user_id','=',$id)->delete();
+        if ($user->delete()){
+            return response()->json([
+                'msg'=>'ok'
+            ]);
+        }
+    }
     public function getInfo(Request $post)
     {
         $uid = getUserToken($post->token);
@@ -140,6 +172,21 @@ class UserController extends Controller
         $user->phone = $post->phone?$post->phone:$user->phone;
         $user->sex = $post->sex?$post->sex:$user->sex;
 //        dd( $post);
+        if ($user->save()){
+            return response()->json([
+                'msg'=>'ok'
+            ]);
+        }
+    }
+    public function editUser(Request $post)
+    {
+        $id = $post->id;
+//        dd($id);
+        $user = WeChatUser::find($id);
+//        dd($user);
+        $user->name = $post->name?$post->name:$user->name;
+        $user->phone = $post->phone?$post->phone:$user->phone;
+        $user->remark = $post->remark?$post->remark:$user->remark;
         if ($user->save()){
             return response()->json([
                 'msg'=>'ok'
@@ -303,13 +350,12 @@ class UserController extends Controller
         //header('content-type:image/jpg');
         $data = array();
         $data['scene'] = "proxy=" . $uid;
-//        $data['page'] = "pages/index/index";
+//        $data['page'] = "pages/agentinfo/agentinfo";
         $data = json_encode($data);
         $access = json_decode($this->get_access_token(),true);
         $access_token= $access['access_token'];
         $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" . $access_token;
         $da = $this->get_http_array($url,$data);
-        //这里强调显示二维码可以直接写该访问路径，同时也可以使用curl保存到本地，详细用法可以加群或者加我扣扣
     }
     public function get_http_array($url,$post_data) {
         $ch = curl_init();

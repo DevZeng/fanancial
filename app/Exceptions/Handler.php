@@ -53,6 +53,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+//        dd($exception);
         $code = 422;
         if ($exception instanceof \Illuminate\Validation\ValidationException){
             $validator = $exception->validator;

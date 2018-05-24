@@ -19,16 +19,20 @@ Route::get('test',function (){
     return date('Y',strtotime($date)).date('m',strtotime($date));
 //    return uniqid();
 });
-Route::group(['middleware'=>'cross'],function (){
+Route::post('login','UserController@login');
+Route::get('logout','UserController@logout');
+Route::group(['middleware'=>['cross','auth']],function (){
 
     Route::post('permission','UserController@createPermission');
     Route::get('permissions','UserController@getPermissions');
     Route::post('role','UserController@createRole');
     Route::get('roles','UserController@roles');
     Route::get('role/{id}','UserController@getRole');
-    Route::post('login','UserController@login');
+    Route::delete('role/{id}','UserController@deleteRole');
+//    Route::delete('role/{id}','UserController@getRole');
+
     Route::get('access/token','UserController@get_qrcode');
-    Route::get('logout','UserController@logout');
+
     Route::post('upload','SystemController@upload');
     Route::get('config','SystemController@getConfig');
     Route::post('config','SystemController@editConfig');
@@ -45,14 +49,17 @@ Route::group(['middleware'=>'cross'],function (){
     Route::get('business/{id}','BusinessController@getBusiness');
     Route::get('types','BusinessController@getTypes');
     Route::get('users','UserController@listUsers');
+    Route::post('user','UserController@editUser');
     Route::get('admins','UserController@listAdmin');
     Route::get('admin/{id}','UserController@getAdmin');
-    Route::post('user','UserController@createUser');
+    Route::delete('admin/{id}','UserController@deleteAdmin');
+    Route::post('admin','UserController@createUser');
     Route::get('agents','UserController@listAgents');
     Route::post('agent','UserController@modifyAgent');
     Route::get('applies','UserController@listApplies');
     Route::get('check/apply','UserController@checkApply');
     Route::get('messages','UserController@searchMessage');
+    Route::get('count','UserController@countLoan');
     Route::get('loans','LoanController@listLoans');
     Route::get('loan/{id}','LoanController@getLoan');
     Route::post('loan','LoanController@editLoan');

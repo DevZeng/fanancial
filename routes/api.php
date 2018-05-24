@@ -20,6 +20,7 @@ Route::get('banners','BannerController@getBanners');
 Route::post('login','UserController@WXLogin');
 Route::get('businesses','BusinessController@Businesses');
 Route::get('business/{id}','BusinessController@getBusiness');
+Route::get('qrcode','UserController@get_qrcode');
 Route::group(['middleware'=>'wx'],function (){
    Route::get('info','UserController@getInfo');
    Route::post('info','UserController@setInfo');
@@ -29,7 +30,7 @@ Route::group(['middleware'=>'wx'],function (){
    Route::get('loans','LoanController@myLoans');
    Route::delete('loan/{id}','LoanController@cancelLoan');
    Route::get('loans/count','LoanController@myLoanCount');
-   Route::get('qrcode','UserController@get_qrcode');
+
    Route::get('scan','UserController@scan');
    Route::get('my/agents','UserController@myAgents');
    Route::post('rate','UserController@editRate');
