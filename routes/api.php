@@ -12,7 +12,13 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
+Route::get('test',function (){
+   $array = [1,2,3,4,5,8];
+   $array = array_filter($array,function ($item){
+      return  $item % 2 == 0;
+   });
+   dd($array);
+});
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });

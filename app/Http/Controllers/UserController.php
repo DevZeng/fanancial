@@ -49,7 +49,7 @@ class UserController extends Controller
         }
         return response()->json([
             'msg'=>'用户名或密码错误！'
-        ],422);
+        ],401);
     }
     public function countLoan()
     {

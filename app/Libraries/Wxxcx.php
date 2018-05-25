@@ -56,6 +56,7 @@ class Wxxcx
         $data = '';
         $errCode = $pc->decryptData($encryptedData,$iv,$data);
         if ($errCode !=0 ) {
+            dd($errCode);
             throw new \Exception('EncryptedData解密失败！');
         }
         return $data;

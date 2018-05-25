@@ -91,6 +91,7 @@ class BusinessController extends Controller
         $types = Input::get('types');
         $min = Input::get('min');
         $max = Input::get('max');
+        $count = Business::count();
 //        dd(Input::all());
         if ($min){
             $db->whereBetween('min',[$min,$max])->whereBetween('max',[$min,$max]);
@@ -116,9 +117,9 @@ class BusinessController extends Controller
         $data1 = $db->limit($limit)->offset(($page-1)*$limit)->get()->toArray();
 //        dd($data1);
         if ($idArr){
-            $data2 = Business::select(['id','promotion'])->whereNotIn('id',$idArr)->get()->toArray();
+            $data2 = Business::select(['id','promotion'])->whereNotIn('id',$idArr)->limit($limit)->offset(($page-1)*$limit)->get()->toArray();
         }else{
-            $data2 = Business::select(['id','promotion'])->orderBy('id','DESC')->get()->toArray();
+            $data2 = Business::select(['id','promotion'])->orderBy('id','DESC')->limit($limit)->offset(($page-1)*$limit)->get()->toArray();
         }
 
 //        $data2 = $db2->limit($limit)->offset(($page-1)*$limit)->get()->toArray();

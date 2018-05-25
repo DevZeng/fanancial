@@ -64,7 +64,7 @@ class LoanController extends Controller
     public function myLoans()
     {
         $uid = getUserToken(Input::get('token'));
-        $state = Input::get('state',1);
+        $state = Input::get('state',0);
         $limit = Input::get('limit',10);
         $page = Input::get('page',1);
         $loan = Loan::where('user_id','=',$uid)->where('state','=',$state)->limit($limit)->offset(($page-1)*$limit)->get();
@@ -133,10 +133,10 @@ class LoanController extends Controller
             $db->whereBetween('created_at',[$start,$end]);
         }
         if ($state){
-            $db->where('state','=',$state);
+            $db->where('state','=',$state-1);
         }
         if ($pay){
-            $db->where('pay','=',$pay);
+            $db->where('pay','=',$pay-1);
         }
         $data = $db->orderBy('id','DESC')->get();
 //        if (!empty($data)){
@@ -293,6 +293,15 @@ class LoanController extends Controller
 //        $id = $post->id;
         $loan = Loan::find($post->id);
         $loan->brokerage = $post->brokerage?$post->brokerage:$loan->brokerage;
+        $ratio = $post->ratio;
+        if ($ratio){
+            $loan->brokerage = $loan->price * ($ratio/100);
+        }
+        if ($loan->brokerage>$loan->price){
+            return response()->json([
+                'msg'=>'返佣金额不能大于贷款金额'
+            ],400);
+        }
         if ($loan->save()){
             return response()->json([
                 'msg'=>'ok'
