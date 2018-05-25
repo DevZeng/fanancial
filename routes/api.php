@@ -30,7 +30,6 @@ Route::group(['middleware'=>'wx'],function (){
    Route::get('loans','LoanController@myLoans');
    Route::delete('loan/{id}','LoanController@cancelLoan');
    Route::get('loans/count','LoanController@myLoanCount');
-
    Route::get('scan','UserController@scan');
    Route::get('my/agents','UserController@myAgents');
    Route::post('rate','UserController@editRate');
@@ -41,4 +40,5 @@ Route::group(['middleware'=>'wx'],function (){
    Route::get('my/brokerage','LoanController@myBrokerage');
    Route::get('my/data','UserController@myData');
    Route::get('my/withdraw','UserController@myWithoutRecord');
+   Route::get('my/apply','UserController@myApply');
 });

@@ -228,7 +228,8 @@ class UserController extends Controller
     {
         $page = Input::get('page',1);
         $limit = Input::get('limit',10);
-        $dbObj = WeChatUser::where('level','=','D');
+//        $dbObj = WeChatUser::where('level','=','D');
+        $dbObj = DB::table('we_chat_users');
         $name = Input::get('name');
         $phone = Input::get('phone');
         if ($name){
@@ -357,12 +358,13 @@ class UserController extends Controller
         $data = json_encode($data);
         $access = json_decode($this->get_access_token(),true);
 //        dd($access);
-//        $access = json_decode($access,true);
+        $access = json_decode($access,true);
 //        dd($access);
         $access_token= $access['access_token'];
+//        $access_token= $access_token['access_token'];
         $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" . $access_token;
 //        dd($url);
-        //        $app->request($url,$data);
+//                $app->request($url,$data);
         $da = $this->get_http_array($url,$data);
     }
     public function get_http_array($url,$post_data) {
@@ -768,6 +770,15 @@ class UserController extends Controller
         $agent->save();
         return response()->json([
             'msg'=>'ok'
+        ]);
+    }
+    public function myApply()
+    {
+        $uid = getUserToken(Input::get('token'));
+        $applies = ProxyApply::where('user_id','=',$uid)->orderBy('id','DESC')->get();
+        return response()->json([
+            'msg'=>'ok',
+            'data'=>$applies
         ]);
     }
 }
