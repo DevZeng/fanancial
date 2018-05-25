@@ -98,17 +98,29 @@ class BusinessController extends Controller
 //            $db2->whereNotBetween('min',[$min,$max])->whereNotBetween('max',[$min,$max]);
 //            $data = array_merge($data1,$data2);
         }
+//        dd($db);
         if ($types){
 //            print_r($types);
             $types = explode(',',$types);
             $list = TypeList::whereIn('type_id',$types)->pluck('business_id')->toArray();
 //            dd($list);
-            $db->whereIn('id',$list);
+            if ($list){
+                $db->whereIn('id',$list);
+            }
+//            dd($db->toSql());
 //            $db2 = $db->whereNotIn('id',$list);
         }
-        $idArr = $db->pluck('id')->get()->toArray();
+//        dd($db);
+        $idArr = $db->pluck('id')->toArray();
+//        dd($idArr);
         $data1 = $db->limit($limit)->offset(($page-1)*$limit)->get()->toArray();
-        $data2 = Business::select(['id','promotion'])->whereNotIn('id',$idArr)->get()->toArray();
+//        dd($data1);
+        if ($idArr){
+            $data2 = Business::select(['id','promotion'])->whereNotIn('id',$idArr)->get()->toArray();
+        }else{
+            $data2 = Business::select(['id','promotion'])->orderBy('id','DESC')->get()->toArray();
+        }
+
 //        $data2 = $db2->limit($limit)->offset(($page-1)*$limit)->get()->toArray();
         $data = array_merge($data1,$data2);
         return response()->json([
