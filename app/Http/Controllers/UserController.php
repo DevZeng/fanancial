@@ -358,7 +358,7 @@ class UserController extends Controller
         $data = json_encode($data);
         $access = json_decode($this->get_access_token(),true);
 //        dd($access);
-        $access = json_decode($access,true);
+//        $access = json_decode($access,true);
 //        dd($access);
         $access_token= $access['access_token'];
 //        $access_token= $access_token['access_token'];
