@@ -19,6 +19,8 @@ class BusinessController extends Controller
             $business = Business::findOrFail($id);
         }else{
             $business = new Business();
+            $business->sort = 1;
+            $business->state = 1;
         }
         $business->name = $post->name?$post->name:$business->name;
         $business->min = $post->min?$post->min:$business->min;
