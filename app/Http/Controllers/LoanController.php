@@ -210,7 +210,7 @@ class LoanController extends Controller
                 "touser"=>$user->open_id,
                 "template_id"=>config('wxxcx.template_id'),
                 "form_id"=> $loan->formId,
-                "page"=>"pages/index/index",
+                "page"=>"pages/orderlist/orderlist?oId=2",
                 "data"=>[
                     "keyword1"=>[
                         "value"=>$loan->number
