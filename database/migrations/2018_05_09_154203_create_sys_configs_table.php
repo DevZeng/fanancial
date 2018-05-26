@@ -18,6 +18,7 @@ class CreateSysConfigsTable extends Migration
             $table->integer('rate');
             $table->string('levelBCode')->nullable();
             $table->string('levelCCode')->nullable();
+            $table->tinyInteger('showSelect')->default(0);
             $table->timestamps();
         });
     }

@@ -23,6 +23,7 @@ class CreateProxyAppliesTable extends Migration
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('proxy_id')->default(0);
             $table->tinyInteger('state')->default(1);
+            $table->tinyInteger('type')->default(1);
             $table->timestamps();
         });
     }

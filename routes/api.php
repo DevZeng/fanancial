@@ -27,6 +27,7 @@ Route::post('login','UserController@WXLogin');
 Route::get('businesses','BusinessController@Businesses');
 Route::get('business/{id}','BusinessController@getBusiness');
 Route::get('qrcode','UserController@get_qrcode');
+Route::get('config','SystemController@getConfig');
 Route::group(['middleware'=>'wx'],function (){
    Route::get('info','UserController@getInfo');
    Route::post('info','UserController@setInfo');
@@ -47,4 +48,6 @@ Route::group(['middleware'=>'wx'],function (){
    Route::get('my/data','UserController@myData');
    Route::get('my/withdraw','UserController@myWithoutRecord');
    Route::get('my/apply','UserController@myApply');
+   Route::get('my/proxy/apply','UserController@myProxyApply');
+   Route::get('check/apply','UserController@checkApply');
 });

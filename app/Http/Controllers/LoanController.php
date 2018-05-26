@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Libraries\WxNotify;
+use App\Libraries\Wxxcx;
 use App\Models\Assess;
 use App\Models\BrokerageLog;
 use App\Models\Business;
 use App\Models\Loan;
 use App\Models\LoanLog;
+use App\Models\ProxyApply;
 use App\Models\ProxyRatio;
 use App\Models\Rate;
 use App\Models\SysConfig;
@@ -48,7 +51,9 @@ class LoanController extends Controller
         $loan->business = Business::find($post->business_id)->name;
         $loan->brokerage = $business->brokerage?$business->brokerage:$loan->brokerage;
         $loan->state = $post->state?$post->state:1;
+        $loan->formId = $post->formId?$post->formId:'';
         $loan->save();
+
         return response()->json([
             'msg'=>'ok',
             'data'=>[
@@ -111,6 +116,7 @@ class LoanController extends Controller
                 'handle'=>$handle,
                 'finish'=>$finish,
                 'cancel'=>$cancel,
+                'apply'=>ProxyApply::where('type','=',2)->where('state','=',0)->where('code','=',100000+$uid)->count()
             ]
         ]);
     }
@@ -122,6 +128,8 @@ class LoanController extends Controller
         $state = Input::get('state');
         $pay = Input::get('pay');
         $number = Input::get('number');
+        $limit = Input::get('limit',10);
+        $page = Input::get('page',1);
         $db = DB::table('loans');
         if ($search){
             $db->where('name','=',$search)->orWhere('phone','=',$search);
@@ -138,7 +146,9 @@ class LoanController extends Controller
         if ($pay){
             $db->where('pay','=',$pay-1);
         }
-        $data = $db->orderBy('id','DESC')->get();
+        $count = $db->count();
+        $data = $db->limit($limit)->offset(($page-1)*$limit)->orderBy('id','DESC')->get();
+
 //        if (!empty($data)){
 //            foreach ($data as $datum){
 //
@@ -147,6 +157,7 @@ class LoanController extends Controller
 //        }
         return response()->json([
             'msg'=>'ok',
+            'count'=>$count,
             'data'=>$data
         ]);
     }
@@ -193,6 +204,36 @@ class LoanController extends Controller
 //            $user = Auth::user();
 //            dd($user);
             $log->save();
+            $user = WeChatUser::find($loan->user_id);
+            $wx = new WxNotify(config('wxxcx.app_id'),config('wxxcx.app_secret'));
+            $data = [
+                "touser"=>$user->open_id,
+                "template_id"=>config('wxxcx.template_id'),
+                "form_id"=> $loan->formId,
+                "page"=>"pages/index/index",
+                "data"=>[
+                    "keyword1"=>[
+                        "value"=>$loan->number
+                    ],
+                    "keyword2"=>[
+                        "value"=>'已受理'
+                    ],
+                    "keyword3"=>[
+                        "value"=>date('Y-m-d H:i:s')
+                    ],
+                    "keyword4"=>[
+                        "value"=>$loan->business
+                    ],
+                    "keyword5"=>[
+                        "value"=>"13902399720"
+                    ],
+                    "keyword6"=>[
+                        "value"=>"业务员尽快与您联系！"
+                    ],
+                ]
+            ];
+            $wx->setAccessToken();
+            $wx->send(json_encode($data));
         }elseif ($loan->state==2){
             $loan->state = 3;
             $log = new LoanLog();
@@ -216,7 +257,7 @@ class LoanController extends Controller
         try{
             $config = SysConfig::first();
             $loan = Loan::findOrFail($id);
-            if ($loan->state!=3){
+            if ($loan->state!=3||$loan->pay==1){
                 return response()->json([
                     'msg'=>'该状态下不能发放贷款！'
                 ]);
@@ -229,11 +270,11 @@ class LoanController extends Controller
                 foreach ($list as $item){
                     if ($item->level=='C'){
                         $ratio = ProxyRatio::where('user_id','=',$user->id)->pluck('ratio')->first();
-                        $ratio = ($ratio*$config->rate)/100;
+                        $ratio = ($ratio/100)*($config->rate/100);
                         $price = $loan->brokerage * $ratio;
                     }elseif ($item->level =='B'){
                         $ratio = ProxyRatio::where('user_id','=',$user->id)->pluck('ratio')->first();
-                        $ratio = ($ratio*$config->rate)/100;
+                        $ratio = ($ratio/100)*($config->rate/100);
                         $price = $loan->brokerage * (1-$ratio);
                     }else{
                         $count = WeChatUser::where('proxy_id','=',$item->id)->count();
@@ -256,18 +297,20 @@ class LoanController extends Controller
                     $brokerage->user_id = $item->id;
                     $brokerage->brokerage = $price;
                     $brokerage->loan_id = $loan->id;
+//                    dd($brokerage);
                     $brokerage->save();
                 }
 //                $list =
 //                dd($list);
             }
-            DB::commit();
+
             $log = new LoanLog();
             $log->user_id = Auth::id();
             $log->loan_id = $id;
             $log->detail = '发放贷款';
             $log->username = Auth::user()->username;
             $log->save();
+            DB::commit();
             return response()->json([
                 'msg'=>'ok'
             ]);

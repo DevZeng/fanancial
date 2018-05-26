@@ -88,14 +88,18 @@ class SystemController extends Controller
         if (empty($config)){
             $config = new SysConfig();
             $config->rate = 60;
+            $config->showSelect = 0;
         }
         $config->rate = $post->rate?$post->rate:$config->rate;
-        $config->levelBCode = $post->levelBCode?CreateNonceStr(10):$config->levelBCode;
-        $config->levelCCode = $post->levelCCode?CreateNonceStr(10):$config->levelCCode;
+        $config->levelBCode = $post->levelBCode?CreateNonceStr(6):$config->levelBCode;
+        $config->levelCCode = $post->levelCCode?CreateNonceStr(6):$config->levelCCode;
+        $config->showSelect = $post->showSelect?$post->showSelect:0;
+//        dd($config);
         if ($config->save()){
             return response()->json([
                 'msg'=>'ok'
             ]);
         }
     }
+//    public function getConfig(){}
 }

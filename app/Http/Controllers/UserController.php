@@ -197,6 +197,7 @@ class UserController extends Controller
     {
         $uid = getUserToken($post->token);
         $count = ProxyApply::where('user_id','=',$uid)->count();
+        $config = SysConfig::first();
         if ($count>0){
             return response()->json([
                 'msg'=>'有待审核的申请！'
@@ -209,6 +210,11 @@ class UserController extends Controller
         $apply->bank = $post->bank;
         $apply->account = $post->account;
         $apply->code = $post->code;
+        if ($config){
+            if ($apply->code==$config->levelBCode||$apply->code==$config->levelCCode){
+                $apply->type = 2;
+            }
+        }
         $apply->save();
         return response()->json([
             'msg'=>'ok'
@@ -287,11 +293,12 @@ class UserController extends Controller
         $page = Input::get('page',1);
         $limit = Input::get('limit',10);
         $search = Input::get('search');
+        $db = ProxyApply::where('type','=',2);
         if ($search){
 //            dd($search);
-            $data = ProxyApply::where('name','like','%'.$search.'%')->orWhere('phone','like','%'.$search.'%')->limit($limit)->offset(($page-1)*$limit)->get();
+            $data = $db->where('name','like','%'.$search.'%')->orWhere('phone','like','%'.$search.'%')->limit($limit)->offset(($page-1)*$limit)->get();
         }else{
-            $data = ProxyApply::limit($limit)->offset(($page-1)*$limit)->get();
+            $data = $db->limit($limit)->offset(($page-1)*$limit)->get();
         }
         return response()->json([
             'msg'=>'ok',
@@ -384,10 +391,15 @@ class UserController extends Controller
         $id = Input::get('id');
         $apply = ProxyApply::findOrFail($id);
         $state = Input::get('state');
+        $config = SysConfig::first();
         if ($state==1){
             $apply->state = 1;
             $user = WeChatUser::find($apply->user_id);
-            $user->level = 'C';
+            if ($config){
+                $user->level=$apply->code == $config->levelBCode?'B':'C';
+            }else{
+                $user->level = 'C';
+            }
 //            $user->code= uniqid();
             $user->save();
         }else{
@@ -511,7 +523,7 @@ class UserController extends Controller
                 'msg'=>'无权操作～'
             ],400);
         }
-        $user->code = uniqid();
+        $user->code = 100000+$uid;
         $user->save();
         return response()->json([
             'msg'=>'ok',
@@ -776,6 +788,15 @@ class UserController extends Controller
     {
         $uid = getUserToken(Input::get('token'));
         $applies = ProxyApply::where('user_id','=',$uid)->orderBy('id','DESC')->get();
+        return response()->json([
+            'msg'=>'ok',
+            'data'=>$applies
+        ]);
+    }
+    public function myProxyApply()
+    {
+        $uid = getUserToken(Input::get('token'));
+        $applies = ProxyApply::where('type','=',2)->where('state','=',0)->where('code','=',100000+$uid)->get();
         return response()->json([
             'msg'=>'ok',
             'data'=>$applies
