@@ -117,9 +117,9 @@ class BusinessController extends Controller
         $data1 = $db->limit($limit)->offset(($page-1)*$limit)->get()->toArray();
 //        dd($data1);
         if ($idArr){
-            $data2 = Business::select(['id','promotion'])->whereNotIn('id',$idArr)->limit($limit)->offset(($page-1)*$limit)->get()->toArray();
+            $data2 = Business::select(['id','promotion'])->where('state','=',1)->whereNotIn('id',$idArr)->limit($limit)->offset(($page-1)*$limit)->get()->toArray();
         }else{
-            $data2 = Business::select(['id','promotion'])->orderBy('id','DESC')->limit($limit)->offset(($page-1)*$limit)->get()->toArray();
+            $data2 = Business::select(['id','promotion'])->where('state','=',1)->orderBy('id','DESC')->limit($limit)->offset(($page-1)*$limit)->get()->toArray();
         }
 
 //        $data2 = $db2->limit($limit)->offset(($page-1)*$limit)->get()->toArray();
