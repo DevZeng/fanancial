@@ -103,6 +103,15 @@ class SystemController extends Controller
         }
     }
 //    public function getConfig(){}
+
+    public function checkWeChat()
+    {
+        $echoStr = Input::get('echostr');
+        if($this->checkSignature()){
+            echo $echoStr;
+            exit;
+        }
+    }
     public function checkSignature()
     {
         $signature = Input::get('signature');
