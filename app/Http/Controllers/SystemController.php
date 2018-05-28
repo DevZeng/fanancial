@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SysConfig;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 
 class SystemController extends Controller
 {
@@ -102,4 +103,20 @@ class SystemController extends Controller
         }
     }
 //    public function getConfig(){}
+    public function checkSignature()
+    {
+        $signature = Input::get('signature');
+        $timestamp = Input::get('timestamp');
+        $nonce =Input::get('nonce');
+        $token = "zrdcForDev";
+        $tmpArr = array($token, $timestamp, $nonce);
+        sort($tmpArr, SORT_STRING);
+        $tmpStr = implode($tmpArr);
+        $tmpStr = sha1($tmpStr);
+        if($tmpStr == $signature){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
