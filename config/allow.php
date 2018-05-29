@@ -8,4 +8,5 @@
 return [
     'http://background.gzzrdc.com',
     'http://app.gzzrdc.com',
+    'http://192.168.1.141:8080'
 ];
