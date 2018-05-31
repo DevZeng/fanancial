@@ -808,4 +808,8 @@ class UserController extends Controller
         $user_data = Socialite::with('weixin')->user();
         dd($user_data);
     }
+    public function redirectToProvider(Request $request)
+    {
+        return Socialite::with('weixin')->redirect();
+    }
 }
