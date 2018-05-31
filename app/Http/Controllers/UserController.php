@@ -24,6 +24,7 @@ use GuzzleHttp\Handler\CurlHandler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Laravel\Socialite\Facades\Socialite;
 
 class UserController extends Controller
 {
@@ -801,5 +802,10 @@ class UserController extends Controller
             'msg'=>'ok',
             'data'=>$applies
         ]);
+    }
+    public function WeChatCallback()
+    {
+        $user_data = Socialite::with('weixin')->user();
+        dd($user_data);
     }
 }
