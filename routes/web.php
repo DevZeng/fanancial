@@ -22,6 +22,7 @@ Route::get('test',function (){
 Route::post('login','UserController@login');
 Route::get('logout','UserController@logout');
 Route::post('upload','SystemController@upload');
+Route::get('api/weixin/callback','UserController@WeChatCallback');
 Route::group(['middleware'=>['cross','auth']],function (){
 
     Route::post('permission','UserController@createPermission');

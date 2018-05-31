@@ -25,7 +25,6 @@ Route::get('business/{id}','BusinessController@getBusiness');
 Route::get('qrcode','UserController@get_qrcode');
 Route::get('config','SystemController@getConfig');
 Route::get('check/signature','SystemController@checkWeChat');
-Route::get('weixin/callback','UserController@WeChatCallback');
 Route::group(['middleware'=>'wx'],function (){
    Route::get('info','UserController@getInfo');
    Route::post('info','UserController@setInfo');
