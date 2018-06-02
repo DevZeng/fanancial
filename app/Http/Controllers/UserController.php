@@ -25,6 +25,7 @@ use GuzzleHttp\Handler\CurlHandler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Validation\Rules\In;
 use Laravel\Socialite\Facades\Socialite;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -876,5 +877,20 @@ class UserController extends Controller
             'msg'=>'ok',
             'data'=>$loans
         ]);
+    }
+    public function editRatio()
+    {
+        $id = Input::get('user_id');
+        $ratio = ProxyRatio::where('user_id','=',$id)->first();
+        if (empty($ratio)){
+            $ratio = new ProxyRatio();
+            $ratio->user_id = $id;
+        }
+        $ratio->ratio = Input::get('ratio');
+        if ($ratio->save()){
+            return response()->json([
+                'msg'=>'ok'
+            ]);
+        }
     }
 }

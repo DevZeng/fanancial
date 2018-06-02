@@ -27,6 +27,7 @@ Route::get('config','SystemController@getConfig');
 Route::get('check/signature','SystemController@checkWeChat');
 Route::post('wx/test','WeChatController@getToken');
 Route::get('upgrade','UserController@upgrade');
+Route::post('ratio','UserController@editRatio');
 Route::group(['middleware'=>'wx'],function (){
    Route::get('info','UserController@getInfo');
    Route::post('info','UserController@setInfo');
