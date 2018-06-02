@@ -880,7 +880,7 @@ class UserController extends Controller
     }
     public function editRatio()
     {
-        $id = Input::get('user_id');
+        $id = Input::get('id');
         $ratio = ProxyRatio::where('user_id','=',$id)->first();
         if (empty($ratio)){
             $ratio = new ProxyRatio();
