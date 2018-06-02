@@ -655,7 +655,7 @@ class UserController extends Controller
         $uid = getUserToken(Input::get('token'));
         $limit = Input::get('limit',10);
         $page = Input::get('page',1);
-        $lists = WithdrawApply::where('user_id','=',$uid)->limit($limit)->offset(($page-1)*$limit)->orderBy('id','DESC')->get();
+        $lists = WithdrawApply::where('user_id','=',$uid)->where('state','=',1)->limit($limit)->offset(($page-1)*$limit)->orderBy('id','DESC')->get();
         return response()->json([
             'msg'=>'ok',
             'data'=>$lists
@@ -691,7 +691,10 @@ class UserController extends Controller
         $apply->state = 1;
         if ($apply->save()){
             BrokerageLog::where('user_id','=',$apply->user_id)->where('state','=',0)->whereYear('created_at',date('Y',strtotime($apply->date)))->whereMonth('created_at', date('m',strtotime($apply->date)))->update(['state'=>1]);
+            $amount = BrokerageLog::where('user_id','=',$apply->user_id)->where('state','=',0)->whereYear('created_at',date('Y',strtotime($apply->date)))->whereMonth('created_at', date('m',strtotime($apply->date)))->sum('brokerage');
         }
+        $apply->amount = $amount;
+        $apply->save();
         return response()->json([
             'msg'=>'ok'
         ]);
