@@ -29,6 +29,7 @@ class WeChatController extends Controller
             $user->open_id = $userData['openid'];
             $user->nickname = $userData['nickname'];
             $user->avatarUrl = $userData['headimgurl'];
+            $user->code = CreateNonceStr(8);
             if ($post->proxyid){
                 $user->proxy_id = $post->proxyid;
             }
