@@ -215,7 +215,7 @@ class UserController extends Controller
 
         $code = $post->code;
         if ($code){
-            if ($apply->code==$config->levelBCode||$apply->code==$config->levelCCode){
+            if ($code==$config->levelBCode||$code==$config->levelCCode){
                 $apply->type = 2;
             }else{
                 $user = WeChatUser::where('code','=',$code)->first();
