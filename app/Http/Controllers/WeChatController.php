@@ -34,6 +34,8 @@ class WeChatController extends Controller
                 $user->proxy_id = $post->proxyid;
             }
             $user->save();
+            $id = $user->id;
+            $user = WeChatUser::find($id);
             $user->apply = 0;
             $token = CreateNonceStr(10);
             setUserToken($token,$user->id);
