@@ -16,7 +16,9 @@ class WeChatController extends Controller
         $wechat = new Wxxcx(config('wxxcx.app_id'),config('wxxcx.app_secret'));
         $data = $wechat->request($url);
         $url2 = 'https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN';
+        var_dump($data);
         $url2 = sprintf($url2,$data['access_token'],$data['openid']);
+        echo $url2;
         $userData = $wechat->request($url2);
         dd($userData);
     }
