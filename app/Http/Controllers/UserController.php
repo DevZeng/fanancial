@@ -210,6 +210,22 @@ class UserController extends Controller
         $apply->phone = $post->phone;
         $apply->bank = $post->bank;
         $apply->account = $post->account;
+
+        $code = $post->code;
+        if ($code){
+            if ($apply->code==$config->levelBCode||$apply->code==$config->levelCCode){
+                $apply->type = 2;
+            }else{
+                $user = WeChatUser::where('code','=',$code)->first();
+                if (!empty($user)){
+                    $apply->type = 1;
+                }else{
+                    return response()->json([
+                        'msg'=>'邀请码无效！'
+                    ],400);
+                }
+            }
+        }
         $apply->code = $post->code;
         if ($config){
             if ($apply->code==$config->levelBCode||$apply->code==$config->levelCCode){
