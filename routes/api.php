@@ -28,6 +28,8 @@ Route::get('check/signature','SystemController@checkWeChat');
 Route::post('wx/test','WeChatController@getToken');
 Route::get('upgrade','UserController@upgrade');
 Route::post('ratio','UserController@editRatio');
+
+Route::post('rate','UserController@editRate');
 Route::group(['middleware'=>'wx'],function (){
    Route::get('info','UserController@getInfo');
    Route::post('info','UserController@setInfo');
@@ -39,7 +41,6 @@ Route::group(['middleware'=>'wx'],function (){
    Route::get('loans/count','LoanController@myLoanCount');
    Route::get('scan','UserController@scan');
    Route::get('my/agents','UserController@myAgents');
-   Route::post('rate','UserController@editRate');
    Route::get('my/code','UserController@myCode');
    Route::get('my/message','UserController@myMessage');
    Route::post('withdraw/apply','UserController@createWithdrawApply');

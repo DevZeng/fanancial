@@ -609,7 +609,7 @@ class UserController extends Controller
     }
     public function editRate()
     {
-        $id = Input::get('user_id');
+        $id = Input::get('id');
         $rate = ProxyRatio::where('user_id','=',$id)->first();
         if (empty($rate)){
             $rate = new ProxyRatio();
