@@ -551,6 +551,23 @@ class UserController extends Controller
             'data'=>$user
         ]);
     }
+    public function upgrade(Request $post)
+    {
+        $uid = getUserToken($post->token);
+        $config = SysConfig::first();
+        $apply = new ProxyApply();
+        $apply->user_id = $uid;
+        $apply->name = $post->name;
+        $apply->phone = $post->phone;
+        $apply->bank = $post->bank;
+        $apply->account = $post->account;
+        $apply->code = $config->levelBCode;
+        if ($apply->save()){
+            return response()->json([
+                'msg'=>'ok'
+            ]);
+        }
+    }
     public function myMessage()
     {
         $uid = getUserToken(Input::get('token'));
