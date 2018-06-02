@@ -13,7 +13,7 @@ class WeChatController extends Controller
         $url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code';
         $code = $post->code;
         $url = sprintf($url,config('wxxcx.appId'),config('wxxcx.appSecret'),$code);
-        $wechat = new Wxxcx();
+        $wechat = new Wxxcx(config('wxxcx.app_id'),config('wxxcx.app_secret'));
         $data = $wechat->request();
         dd($data);
     }
