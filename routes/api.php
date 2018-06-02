@@ -43,6 +43,7 @@ Route::group(['middleware'=>'wx'],function (){
    Route::post('withdraw/apply','UserController@createWithdrawApply');
    Route::post('assess','LoanController@createAssess');
    Route::get('my/brokerage','LoanController@myBrokerage');
+   Route::get('my/bill','UserController@myBill');
    Route::get('my/data','UserController@myData');
    Route::get('my/withdraw','UserController@myWithoutRecord');
    Route::get('my/apply','UserController@myApply');
