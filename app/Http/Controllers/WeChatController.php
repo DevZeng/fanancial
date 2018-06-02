@@ -14,7 +14,7 @@ class WeChatController extends Controller
         $code = $post->code;
         $url = sprintf($url,config('wxxcx.appId'),config('wxxcx.appSecret'),$code);
         $wechat = new Wxxcx(config('wxxcx.app_id'),config('wxxcx.app_secret'));
-        $data = $wechat->request();
+        $data = $wechat->request($url);
         dd($data);
     }
 }
