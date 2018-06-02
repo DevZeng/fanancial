@@ -61,6 +61,7 @@ class LoanController extends Controller
                 'time'=>$date,
                 'name'=>$loan->name,
                 'phone'=>$loan->phone,
+                'price'=>$loan->price,
                 'state'=>'待处理',
                 'type'=>$business->name
             ]
