@@ -5,5 +5,7 @@ return [
     'mch_id'=>'1462614102',
     'notify_url'=>'https://taojin.bihu2018.com/pay/notify',
     'api_key'=>'guangzhoubailongguangzhoubailong',
-    'template_id'=>'No4yhbieeLFU8MZNnV3ksZnUiPTJKja-ztF73mhv5e0'
+    'template_id'=>'No4yhbieeLFU8MZNnV3ksZnUiPTJKja-ztF73mhv5e0',
+    'appId'=>'wxe20a7fb1b2d42d73',
+    'appSecret'=>'703942cddd08c7a4bb65049ffd746877'
 ];
