@@ -7,6 +7,6 @@
  */
 return [
     'http://background.gzzrdc.com',
-    'http://app.gzzrdc.com',
+    'https://www.gzzrdc.com',
     'http://192.168.1.141:8080'
 ];
