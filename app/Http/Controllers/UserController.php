@@ -615,7 +615,7 @@ class UserController extends Controller
             $rate = new ProxyRatio();
             $rate->user_id = $id;
         }
-        $rate->ratio = Input::get('rate',$rate->rate);
+        $rate->ratio = Input::get('ratio',$rate->rate);
         $rate->save();
         return response()->json([
             'msg'=>'ok'
