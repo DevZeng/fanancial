@@ -553,14 +553,15 @@ class UserController extends Controller
     }
     public function upgrade(Request $post)
     {
-        $uid = getUserToken($post->token);
+        $uid = $post->id;
         $config = SysConfig::first();
         $apply = new ProxyApply();
         $apply->user_id = $uid;
-        $apply->name = $post->name;
-        $apply->phone = $post->phone;
-        $apply->bank = $post->bank;
-        $apply->account = $post->account;
+        $apply->name = 'C级代理升级B级代理';
+        $apply->phone = '';
+        $apply->bank = '';
+        $apply->account = '';
+        $apply->type = 2;
         $apply->code = $config->levelBCode;
         if ($apply->save()){
             return response()->json([
