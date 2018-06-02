@@ -26,11 +26,11 @@ Route::get('qrcode','UserController@get_qrcode');
 Route::get('config','SystemController@getConfig');
 Route::get('check/signature','SystemController@checkWeChat');
 Route::post('wx/test','WeChatController@getToken');
+Route::get('upgrade','UserController@upgrade');
 Route::group(['middleware'=>'wx'],function (){
    Route::get('info','UserController@getInfo');
    Route::post('info','UserController@setInfo');
    Route::post('apply','UserController@applyProxy');
-   Route::get('upgrade','UserController@upgrade');
    Route::get('apply','UserController@getApply');
    Route::post('loan','LoanController@createLoan');
    Route::get('loans','LoanController@myLoans');

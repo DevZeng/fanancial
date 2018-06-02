@@ -374,12 +374,16 @@ class UserController extends Controller
 //        $app = new Wxxcx(config('wxxcx.app_id'),config('wxxcx.app_secret'));
 //        $access_token = $app->getAccessToken();
 //        dd($access_token);
-        $uid = getUserToken(Input::get('token'));
+        $uid = 1;
+//        $uid = getUserToken(Input::get('token'));
         $url = 'http://app.gzzrdc.com/?proxyid='.$uid;
-        return QrCode::size(200)->generate($url);
+//        header('content-type:image/png');
+//        return QrCode::format('png')->size(200)->generate('http://laravelacademy.org');
+//        return $png;
+        return response(QrCode::format('png')->size(200)->generate($url),'200',['Content-Type'=>'image/jpg']);
 //        header('content-type:image/gif');
         //header('content-type:image/png');格式自选，不同格式貌似加载速度略有不同，想加载更快可选择jpg
-//        header('content-type:image/jpg');
+//
 //        $data = array();
 //        $data['scene'] = "proxy=" . $uid;
 ////        $data['page'] = "pages/agentinfo/agentinfo";
