@@ -19,12 +19,14 @@ use App\Models\SysConfig;
 use App\Models\WeChatUser;
 use App\Models\WithdrawApply;
 use App\User;
+//use BaconQrCode\Encoder\QrCode;
 use GuzzleHttp\Handler\CurlFactory;
 use GuzzleHttp\Handler\CurlHandler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Laravel\Socialite\Facades\Socialite;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class UserController extends Controller
 {
@@ -373,23 +375,25 @@ class UserController extends Controller
 //        $access_token = $app->getAccessToken();
 //        dd($access_token);
         $uid = getUserToken(Input::get('token'));
+        $url = 'http://app.gzzrdc.com/?proxyid='.$uid;
+        return QrCode::size(200)->generate($url);
 //        header('content-type:image/gif');
         //header('content-type:image/png');格式自选，不同格式貌似加载速度略有不同，想加载更快可选择jpg
-        header('content-type:image/jpg');
-        $data = array();
-        $data['scene'] = "proxy=" . $uid;
-//        $data['page'] = "pages/agentinfo/agentinfo";
-        $data = json_encode($data);
-        $access = json_decode($this->get_access_token(),true);
-//        dd($access);
-//        $access = json_decode($access,true);
-//        dd($access);
-        $access_token= $access['access_token'];
-//        $access_token= $access_token['access_token'];
-        $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" . $access_token;
-//        dd($url);
-//                $app->request($url,$data);
-        $da = $this->get_http_array($url,$data);
+//        header('content-type:image/jpg');
+//        $data = array();
+//        $data['scene'] = "proxy=" . $uid;
+////        $data['page'] = "pages/agentinfo/agentinfo";
+//        $data = json_encode($data);
+//        $access = json_decode($this->get_access_token(),true);
+////        dd($access);
+////        $access = json_decode($access,true);
+////        dd($access);
+//        $access_token= $access['access_token'];
+////        $access_token= $access_token['access_token'];
+//        $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" . $access_token;
+////        dd($url);
+////                $app->request($url,$data);
+//        $da = $this->get_http_array($url,$data);
     }
     public function get_http_array($url,$post_data) {
         $ch = curl_init();

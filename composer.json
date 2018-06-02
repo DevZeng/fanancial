@@ -11,7 +11,7 @@
         "laravel/socialite": "^2.0",
         "laravel/tinker": "~1.0",
         "predis/predis": "^1.1",
-        "socialiteproviders/weixin": "3.0.*"
+        "simplesoftwareio/simple-qrcode": "1.3.*"
     },
     "require-dev": {
         "filp/whoops": "~2.0",
