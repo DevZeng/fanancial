@@ -19,14 +19,14 @@ if (!function_exists('setUserToken')){
     function setUserToken($key,$value)
     {
         \Illuminate\Support\Facades\Redis::set($key,$value);
-        \Illuminate\Support\Facades\Redis::expire($key,900);
+//        \Illuminate\Support\Facades\Redis::expire($key,900);
     }
 }
 if (!function_exists('getUserToken')) {
     function getUserToken($key)
     {
         $uid = \Illuminate\Support\Facades\Redis::get($key);
-        \Illuminate\Support\Facades\Redis::expire($key,900);
+//        \Illuminate\Support\Facades\Redis::expire($key,900);
         if (!isset($uid)){
             return false;
         }
