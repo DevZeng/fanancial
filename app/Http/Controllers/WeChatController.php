@@ -6,6 +6,7 @@ use App\Libraries\Wxxcx;
 use App\Models\ProxyApply;
 use App\Models\WeChatUser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 
 class WeChatController extends Controller
 {
@@ -62,5 +63,26 @@ class WeChatController extends Controller
         }
 
 //        dd($userData);
+    }
+    public function touch()
+    {
+        $open_id = Input::get('open_id');
+        $user = WeChatUser::where('open_id','=',$open_id)->first();
+        if (!empty($user)){
+            $user->apply = ProxyApply::where('user_id','=',$user->id)->where('state','!=',2)->count();
+            $token = CreateNonceStr(10);
+            setUserToken($token,$user->id);
+            return response()->json([
+                'msg'=>'ok',
+                'data'=>[
+                    'token'=>$token,
+                    'user'=>$user
+                ]
+            ]);
+        }else{
+            return response()->json([
+                'msg'=>'用户不存在！'
+            ]);
+        }
     }
 }
