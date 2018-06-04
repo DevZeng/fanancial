@@ -893,4 +893,14 @@ class UserController extends Controller
             ]);
         }
     }
+    public function getUserByToken()
+    {
+        $uid = getUserToken(Input::get('token'));
+        $user = WeChatUser::find($uid);
+        $user->apply = ProxyApply::where('user_id','=',$user->id)->where('state','!=',2)->count();
+        return response()->json([
+            'msg'=>'ok',
+            'data'=>$user
+        ]);
+    }
 }

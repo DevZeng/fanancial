@@ -53,4 +53,5 @@ Route::group(['middleware'=>'wx'],function (){
    Route::get('my/apply','UserController@myApply');
    Route::get('my/proxy/apply','UserController@myProxyApply');
    Route::get('check/apply','UserController@checkApply');
+   Route::get('user','UserController@getUserByToken');
 });
