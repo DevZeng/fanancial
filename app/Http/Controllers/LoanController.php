@@ -206,35 +206,43 @@ class LoanController extends Controller
 //            dd($user);
             $log->save();
             $user = WeChatUser::find($loan->user_id);
-            $wx = new WxNotify(config('wxxcx.app_id'),config('wxxcx.app_secret'));
-            $data = [
-                "touser"=>$user->open_id,
-                "template_id"=>config('wxxcx.template_id'),
-                "form_id"=> $loan->formId,
-                "page"=>"pages/orderlist/orderlist?oId=2",
-                "data"=>[
-                    "keyword1"=>[
-                        "value"=>$loan->number
-                    ],
-                    "keyword2"=>[
-                        "value"=>'已受理'
-                    ],
-                    "keyword3"=>[
-                        "value"=>date('Y-m-d H:i:s')
-                    ],
-                    "keyword4"=>[
-                        "value"=>$loan->business
-                    ],
-                    "keyword5"=>[
-                        "value"=>"13902399720"
-                    ],
-                    "keyword6"=>[
-                        "value"=>"业务员尽快与您联系！"
-                    ],
-                ]
-            ];
-            $wx->setAccessToken();
-            $wx->send(json_encode($data));
+            $url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET';
+//            $code = $post->code;
+            $url = sprintf($url,config('wxxcx.appId'),config('wxxcx.appSecret'));
+            $wechat = new Wxxcx(config('wxxcx.app_id'),config('wxxcx.app_secret'));
+            $data = $wechat->request($url);
+            if (isset($data['access_token'])){
+                $sendUrl = 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token='.$data['access_token'];
+                $data = [
+                    "touser"=>$user->open_id,
+                    "template_id"=>config('wxxcx.templateId'),
+//                    "form_id"=> $loan->formId,
+                    "url"=>"https://www.gzzrdc.com/Orderlist?oId=2",
+                    "data"=>[
+                        "first"=>[
+                            'value'=>'您好，您有一条订单变更消息提醒'
+                        ],
+                        "keyword1"=>[
+                            "value"=>$loan->number
+                        ],
+                        "keyword2"=>[
+                            "value"=>'已受理'
+                        ],
+                        "keyword3"=>[
+                            "value"=>"您的订单已经收到，客服正在为您处理订单～"
+                        ],
+                        "remark"=>[
+                            "value"=>"业务员尽快与您联系！"
+                        ]
+                    ]
+                ];
+                $wechat->request($sendUrl,json_encode($data));
+//                $wechat->send(json_encode($data));
+            }
+
+
+//            $wx = new WxNotify(config('wxxcx.app_id'),config('wxxcx.app_secret'));
+
         }elseif ($loan->state==2){
             $loan->state = 3;
             $log = new LoanLog();

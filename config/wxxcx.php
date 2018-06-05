@@ -7,5 +7,6 @@ return [
     'api_key'=>'guangzhoubailongguangzhoubailong',
     'template_id'=>'No4yhbieeLFU8MZNnV3ksZnUiPTJKja-ztF73mhv5e0',
     'appId'=>'wxe20a7fb1b2d42d73',
-    'appSecret'=>'703942cddd08c7a4bb65049ffd746877'
+    'appSecret'=>'703942cddd08c7a4bb65049ffd746877',
+    'templateId'=>'y5WVxeMZWnl_G7rQst3kzWH_hICaFcKuCbry4F7ca2I'
 ];
