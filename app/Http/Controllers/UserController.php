@@ -898,6 +898,7 @@ class UserController extends Controller
         $uid = getUserToken(Input::get('token'));
         $user = WeChatUser::find($uid);
         $user->apply = ProxyApply::where('user_id','=',$user->id)->where('state','!=',2)->count();
+        $user->apply = $user->apply==0?0:1;
         return response()->json([
             'msg'=>'ok',
             'data'=>$user

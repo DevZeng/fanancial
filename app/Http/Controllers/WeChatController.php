@@ -45,6 +45,7 @@ class WeChatController extends Controller
 //                $user->flag = 1;
 //                $user->save();
                 $user->apply = ProxyApply::where('user_id','=',$user->id)->where('state','!=',2)->count();
+                $user->apply = $user->apply==0?0:1;
                 $token = CreateNonceStr(10);
                 setUserToken($token,$user->id);
             }
@@ -70,6 +71,7 @@ class WeChatController extends Controller
         $user = WeChatUser::where('open_id','=',$open_id)->first();
         if (!empty($user)){
             $user->apply = ProxyApply::where('user_id','=',$user->id)->where('state','!=',2)->count();
+            $user->apply = $user->apply==0?0:1;
             $token = CreateNonceStr(10);
             setUserToken($token,$user->id);
             return response()->json([
