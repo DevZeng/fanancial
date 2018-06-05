@@ -206,7 +206,7 @@ class LoanController extends Controller
 //            dd($user);
             $log->save();
             $user = WeChatUser::find($loan->user_id);
-            $url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET';
+            $url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s';
 //            $code = $post->code;
             $url = sprintf($url,config('wxxcx.appId'),config('wxxcx.appSecret'));
             $wechat = new Wxxcx(config('wxxcx.app_id'),config('wxxcx.app_secret'));
