@@ -377,7 +377,7 @@ class UserController extends Controller
 //        dd($access_token);
 //        $uid = 1;
         $uid = getUserToken(Input::get('token'));
-        $url = 'http://app.gzzrdc.com/?proxyid='.$uid;
+        $url = 'http://www.gzzrdc.com/?proxyid='.$uid;
 //        header('content-type:image/png');
 //        return QrCode::format('png')->size(200)->generate('http://laravelacademy.org');
 //        return $png;

@@ -47,7 +47,7 @@ Route::group(['middleware'=>['cross','auth']],function (){
     Route::get('banner/{id}','BannerController@getBanner');
     Route::get('banners','BannerController@getBanners');
     Route::post('business','BusinessController@create');
-    Route::get('businesses','BusinessController@getBusinesses');
+    Route::get('businesses','BusinessController@getAllBusinesses');
 //        Route::put('business/{id}','BusinessController@edit');
     Route::delete('business/{id}','BusinessController@delete');
     Route::get('business/{id}','BusinessController@getBusiness');

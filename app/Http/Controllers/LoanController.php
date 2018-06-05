@@ -179,7 +179,7 @@ class LoanController extends Controller
         $loan->phone = $post->phone?$post->phone:$loan->phone;
         $loan->price = $post->price?$post->price:$loan->price;
         $loan->business_id = $post->business_id?$post->business_id:$loan->business_id;
-        $loan->remark = $post->remark?$post->remark:$loan->remark;
+        $loan->remark = $post->note?$post->note:$loan->remark;
         if ($loan->save()){
             return response()->json([
                 'msg'=>'ok'

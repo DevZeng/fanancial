@@ -75,6 +75,19 @@ class BusinessController extends Controller
             'data'=>$business
         ]);
     }
+    public function getAllBusinesses(Request $post)
+    {
+//        $state = $post->get('state',1);
+        $page = $post->get('page',1);
+        $limit = $post->get('limit',10);
+        $count = Business::count();
+        $business = Business::limit($limit)->offset(($page-1)*$limit)->get();
+        return response()->json([
+            'msg'=>'ok',
+            'count'=>$count,
+            'data'=>$business
+        ]);
+    }
 
     public function getTypes()
     {
