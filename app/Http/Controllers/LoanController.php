@@ -211,6 +211,7 @@ class LoanController extends Controller
             $url = sprintf($url,config('wxxcx.appId'),config('wxxcx.appSecret'));
             $wechat = new Wxxcx(config('wxxcx.app_id'),config('wxxcx.app_secret'));
             $data = $wechat->request($url);
+            var_dump($data);
             if (isset($data['access_token'])){
                 var_dump($data);
                 $sendUrl = 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token='.$data['access_token'];
