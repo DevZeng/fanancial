@@ -519,6 +519,12 @@ class UserController extends Controller
         $record = new ScanRecord();
         $record->proxy_id = $id;
         $record->user_id = $uid;
+        $user = WeChatUser::find($uid);
+        if ($user->proxy_id==0){
+            $user->proxy_id = $id;
+            $user->save();
+        }
+//        $proxy = WeChatUser::find($id);
         $record->save();
         return response()->json([
             'msg'=>'ok'
