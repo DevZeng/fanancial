@@ -96,7 +96,7 @@ class WeChatController extends Controller
         $url = sprintf($url,config('wxxcx.appId'),config('wxxcx.appSecret'));
         $wechat = new Wxxcx(config('wxxcx.app_id'),config('wxxcx.app_secret'));
         $data = $wechat->request($url);
-        var_dump($data);
+//        var_dump($data);
         if (isset($data['access_token'])){
             $user = WeChatUser::find($uid);
             $requestUri = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN';
@@ -108,8 +108,7 @@ class WeChatController extends Controller
             return response()->json([
                 'msg'=>'ok',
                 'data'=>[
-                    'subscribe'=>$returnData['subscribe']?$returnData['subscribe']:0,
-                    'returnData'=>$returnData
+                    'subscribe'=>$returnData['subscribe']?$returnData['subscribe']:0
                 ]
             ]);
         }
