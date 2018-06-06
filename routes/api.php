@@ -27,7 +27,7 @@ Route::get('config','SystemController@getConfig');
 Route::get('check/signature','SystemController@checkWeChat');
 Route::post('wx/test','WeChatController@getToken');
 Route::get('touch','WeChatController@touch');
-Route::get('check','WeChatController@check');
+Route::get('check/subscribe','WeChatController@check');
 Route::get('upgrade','UserController@upgrade');
 Route::post('ratio','UserController@editRatio');
 
