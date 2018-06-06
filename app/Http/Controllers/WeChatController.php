@@ -103,7 +103,7 @@ class WeChatController extends Controller
             $requestUri = sprintf($requestUri,$data['access_token'],$user->open_id);
             $returnData = $wechat->request($requestUri);
         }
-        return response()->json($returnData);
+//        return response()->json($returnData);
         if (isset($returnData)){
             return response()->json([
                 'msg'=>'ok',
