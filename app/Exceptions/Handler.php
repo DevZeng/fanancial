@@ -80,7 +80,7 @@ class Handler extends ExceptionHandler
             $message = $exception->getMessage();
             $code = 500;
         }
-        return response()->json($exception);
+        dd($exception);
         return response()->json([
             'msg'=>$message
         ],$code);
