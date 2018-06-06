@@ -105,7 +105,8 @@ class WeChatController extends Controller
             return response()->json([
                 'msg'=>'ok',
                 'data'=>[
-                    'subscribe'=>$returnData['subscribe']
+                    'subscribe'=>$returnData['subscribe']?$returnData['subscribe']:0,
+                    'returnData'=>$returnData
                 ]
             ]);
         }
