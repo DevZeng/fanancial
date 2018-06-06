@@ -89,17 +89,18 @@ class WeChatController extends Controller
     }
     public function check(Request $post)
     {
-        $url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code';
-        $code = $post->code;
+//        $url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code';
+        $url= 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s';
+//        $code = $post->code;
         $uid = getUserToken($post->token);
-        $url = sprintf($url,config('wxxcx.appId'),config('wxxcx.appSecret'),$code);
+        $url = sprintf($url,config('wxxcx.appId'),config('wxxcx.appSecret'));
         $wechat = new Wxxcx(config('wxxcx.app_id'),config('wxxcx.app_secret'));
         $data = $wechat->request($url);
         var_dump($data);
         if (isset($data['access_token'])){
-//            $user = WeChatUser::find($uid);
+            $user = WeChatUser::find($uid);
             $requestUri = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN';
-            $requestUri = sprintf($requestUri,$data['access_token'],$data['openid']);
+            $requestUri = sprintf($requestUri,$data['access_token'],$user->open_id);
             $returnData = $wechat->request($requestUri);
         }
         return response()->json($returnData);
