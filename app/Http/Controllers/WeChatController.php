@@ -97,9 +97,9 @@ class WeChatController extends Controller
         $data = $wechat->request($url);
         var_dump($data);
         if (isset($data['access_token'])){
-            $user = WeChatUser::find($uid);
+//            $user = WeChatUser::find($uid);
             $requestUri = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN';
-            $requestUri = sprintf($requestUri,$data['access_token'],$user->open_id);
+            $requestUri = sprintf($requestUri,$data['access_token'],$data['openid']);
             $returnData = $wechat->request($requestUri);
         }
         return response()->json($returnData);
