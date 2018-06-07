@@ -26,6 +26,7 @@ Route::post('upload','SystemController@upload');
 Route::get('weixin/callback','UserController@WeChatCallback');
 Route::get('weixin','UserController@redirectToProvider');
 
+Route::get('pay/loan/{id}','LoanController@payLoan');
 Route::group(['middleware'=>['cross','auth']],function (){
 
     Route::get('users','UserController@listUsers');
@@ -69,7 +70,6 @@ Route::group(['middleware'=>['cross','auth']],function (){
     Route::get('loan/{id}','LoanController@getLoan');
     Route::post('loan','LoanController@editLoan');
 //    Route::get('agent/{id}','UserController@getProxy');
-    Route::get('pay/loan/{id}','LoanController@payLoan');
     Route::get('change/loan/{id}','LoanController@changeLoanState');
     Route::post('loan/brokerage','LoanController@modifyLoanBrokerage');
     Route::get('brokerages','LoanController@listBrokerage');

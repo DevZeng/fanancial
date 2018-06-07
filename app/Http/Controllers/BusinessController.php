@@ -83,12 +83,7 @@ class BusinessController extends Controller
         $limit = $post->get('limit',10);
         $count = Business::count();
         $business = Business::limit($limit)->offset(($page-1)*$limit)->get();
-        if (!empty($business)){
-            foreach ($business as $item){
-                $user = WeChatUser::find($item->proxy_id);
-                $item->proxy_id = $user?$user->name:'';
-            }
-        }
+
         return response()->json([
             'msg'=>'ok',
             'count'=>$count,

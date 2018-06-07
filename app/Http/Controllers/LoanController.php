@@ -151,6 +151,12 @@ class LoanController extends Controller
         $count = $db->count();
         $data = $db->limit($limit)->offset(($page-1)*$limit)->orderBy('id','DESC')->get();
 
+        if (!empty($data)){
+            foreach ($data as $item){
+                $user = WeChatUser::find($item->proxy_id);
+                $item->proxy_id = $user?$user->name:'';
+            }
+        }
 //        if (!empty($data)){
 //            foreach ($data as $datum){
 //
