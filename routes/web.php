@@ -25,6 +25,8 @@ Route::post('upload','SystemController@upload');
 
 Route::get('weixin/callback','UserController@WeChatCallback');
 Route::get('weixin','UserController@redirectToProvider');
+
+Route::get('users','UserController@listUsers');
 Route::group(['middleware'=>['cross','auth']],function (){
 
     Route::post('permission','UserController@createPermission');
@@ -52,7 +54,6 @@ Route::group(['middleware'=>['cross','auth']],function (){
     Route::delete('business/{id}','BusinessController@delete');
     Route::get('business/{id}','BusinessController@getBusiness');
     Route::get('types','BusinessController@getTypes');
-    Route::get('users','UserController@listUsers');
     Route::post('user','UserController@editUser');
     Route::get('admins','UserController@listAdmin');
     Route::get('admin/{id}','UserController@getAdmin');
