@@ -318,6 +318,7 @@ class LoanController extends Controller
                     }
 
                     $brokerage->user_id = $item->id;
+                    $brokerage->proxy_id = $item->id;
                     $brokerage->brokerage = $price;
                     $brokerage->loan_id = $loan->id;
 //                    dd($brokerage);
@@ -428,7 +429,7 @@ class LoanController extends Controller
         foreach ($list as $item){
             $item->loan = Loan::find($item->loan_id);
             $item->proxy = Loan::find($item->proxy_id);
-            $item->user = Loan::find($item->user_id);
+//            $item->user = Loan::find($item->user_id);
         }
         return response()->json([
             'msg'=>'ok',
