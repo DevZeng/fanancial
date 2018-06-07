@@ -49,7 +49,7 @@ class LoanController extends Controller
         $loan->price = $post->price?$post->price:$loan->price;
         $loan->business_id = $post->business_id?$post->business_id:$loan->business_id;
         $loan->business = Business::find($post->business_id)->name;
-        $loan->brokerage = $business->brokerage?(1-($business->brokerage/100))*$post->price:$loan->brokerage;
+        $loan->brokerage = $business->brokerage?($business->brokerage/100)*$post->price:$loan->brokerage;
         $loan->state = $post->state?$post->state:1;
         $loan->formId = $post->formId?$post->formId:'';
         $loan->proxy_id = $user->proxy_id;
