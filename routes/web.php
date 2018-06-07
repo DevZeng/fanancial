@@ -26,9 +26,9 @@ Route::post('upload','SystemController@upload');
 Route::get('weixin/callback','UserController@WeChatCallback');
 Route::get('weixin','UserController@redirectToProvider');
 
-Route::get('users','UserController@listUsers');
 Route::group(['middleware'=>['cross','auth']],function (){
 
+    Route::get('users','UserController@listUsers');
     Route::post('permission','UserController@createPermission');
     Route::get('permissions','UserController@getPermissions');
     Route::post('role','UserController@createRole');
