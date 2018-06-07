@@ -450,5 +450,23 @@ class LoanController extends Controller
             ]
         ]);
     }
+    public function getAssesses()
+    {
+        $page = Input::get('page',1);
+        $limit = Input::get('limit',10);
+        $count = Assess::count();
+        $assesses = Assess::limit($limit)->offset(($page-1)*$limit)->orderBy('id','DESC')->get();
+        if (!empty($assesses)){
+            foreach ($assesses as $assess){
+                $assess->loan = Loan::find($assess->loan_id);
+                $assess->user = WeChatUser::find($assess->loan->user_id);
+            }
+        }
+        return response()->json([
+            'msg'=>'ok',
+            'count'=>$count,
+            'data'=>$assesses
+        ]);
+    }
 
 }
