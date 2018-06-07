@@ -284,9 +284,12 @@ class LoanController extends Controller
             }
             $loan->pay = 1;
             $loan->save();
+//            dd($config);
             if ($loan->proxy_id !=0){
                 $user = WeChatUser::findOrFail($loan->proxy_id);
+//                dd($user);
                 $list = $this->getUsers($user);
+//                dd($list);
                 foreach ($list as $item){
                     if ($item->level=='C'){
                         $ratio = ProxyRatio::where('user_id','=',$user->id)->pluck('ratio')->first();
@@ -373,10 +376,12 @@ class LoanController extends Controller
     }
     public function getUsers($user,&$data=[])
     {
+//        dd($user);
         if (!empty($user)){
             if ($user->proxy_id!=0){
                 array_push($data,$user);
                 $swap = WeChatUser::find($user->proxy_id);
+//                var_dump($swap);
                 $this->getUsers($swap,$data);
             }else{
                 array_push($data,$user);
