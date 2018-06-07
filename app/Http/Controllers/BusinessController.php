@@ -6,6 +6,7 @@ use App\Http\Requests\BusinessPost;
 use App\Models\Business;
 use App\Models\Type;
 use App\Models\TypeList;
+use App\Models\WeChatUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 
@@ -82,6 +83,12 @@ class BusinessController extends Controller
         $limit = $post->get('limit',10);
         $count = Business::count();
         $business = Business::limit($limit)->offset(($page-1)*$limit)->get();
+        if (!empty($business)){
+            foreach ($business as $item){
+                $user = WeChatUser::find($item->proxy_id);
+                $item->proxy_id = $user?$user->name:'';
+            }
+        }
         return response()->json([
             'msg'=>'ok',
             'count'=>$count,
