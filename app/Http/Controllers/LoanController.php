@@ -428,7 +428,7 @@ class LoanController extends Controller
         $list = $db->limit($limit)->offset(($page-1)*$limit)->orderBy('id','DESC')->get();
         foreach ($list as $item){
             $item->loan = Loan::find($item->loan_id);
-            $item->proxy = Loan::find($item->proxy_id);
+            $item->proxy = WeChatUser::find($item->proxy_id)->name;
 //            $item->user = Loan::find($item->user_id);
         }
         return response()->json([
