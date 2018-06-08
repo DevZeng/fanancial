@@ -911,4 +911,25 @@ class UserController extends Controller
             'data'=>$user
         ]);
     }
+    public function scanRecord()
+    {
+        $page = Input::get('page',1);
+        $limit = Input::get('limit',10);
+        $uid = getUserToken(Input::get('token'));
+//        $uid = 19;
+        $records = ScanRecord::groupBy('user_id')->where('proxy_id','=',$uid)->limit($limit)->offset(($page-1)*$limit)->get();
+        $count = ScanRecord::groupBy('user_id')->count();
+        if (!empty($records)){
+            foreach ($records as $record){
+                $record->username = WeChatUser::find($record->user_id)->nickname;
+            }
+        }
+        return response()->json([
+            'msg'=>'ok',
+            'data'=>$records,
+            'count'=>$count
+        ]);
+//        dd($records);
+
+    }
 }

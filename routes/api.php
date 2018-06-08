@@ -32,6 +32,7 @@ Route::get('upgrade','UserController@upgrade');
 Route::post('ratio','UserController@editRatio');
 
 Route::post('rate','UserController@editRate');
+Route::get('my/scan/record','UserController@scanRecord');
 Route::group(['middleware'=>'wx'],function (){
    Route::get('info','UserController@getInfo');
    Route::post('info','UserController@setInfo');
