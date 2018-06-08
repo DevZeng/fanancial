@@ -440,6 +440,7 @@ class LoanController extends Controller
     {
         $uid = getUserToken(Input::get('token'));
         $date = Input::get('date');
+        var_dump($date);
         var_dump(strtotime($date));
         var_dump(date('Y',strtotime($date)));
         $db = BrokerageLog::where('proxy_id','=',$uid)->where('state','=',0)->whereYear('created_at',date('Y',strtotime($date)))->whereMonth('created_at', date('m',strtotime($date)));
