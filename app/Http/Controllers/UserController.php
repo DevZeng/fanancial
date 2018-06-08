@@ -710,7 +710,7 @@ class UserController extends Controller
         $uid = getUserToken(Input::get('token'));
         $limit = Input::get('limit',10);
         $page = Input::get('page',1);
-        $lists = WithdrawApply::where('user_id','=',$uid)->where('state','=',1)->limit($limit)->offset(($page-1)*$limit)->orderBy('id','DESC')->get();
+        $lists = WithdrawApply::where('user_id','=',$uid)->limit($limit)->offset(($page-1)*$limit)->orderBy('id','DESC')->get();
         return response()->json([
             'msg'=>'ok',
             'data'=>$lists
