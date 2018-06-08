@@ -440,10 +440,16 @@ class LoanController extends Controller
     {
         $uid = getUserToken(Input::get('token'));
         $date = Input::get('date');
+        $date = explode('/',$date);
+        if (count($date)!=2){
+            return response()->json([
+                'msg'=>'日期格式不正确!'
+            ]);
+        }
         var_dump($date);
-        var_dump(strtotime($date));
-        var_dump(date('Y',strtotime($date)));
-        $db = BrokerageLog::where('proxy_id','=',$uid)->where('state','=',0)->whereYear('created_at',date('Y',strtotime($date)))->whereMonth('created_at', date('m',strtotime($date)));
+//        var_dump(strtotime($date));
+//        var_dump(date('Y',strtotime($date)));
+        $db = BrokerageLog::where('proxy_id','=',$uid)->where('state','=',0)->whereYear('created_at',$date[0])->whereMonth('created_at', $date[1]);
         return response()->json([
             'msg'=>'ok',
             'data'=>[
