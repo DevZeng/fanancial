@@ -54,7 +54,7 @@ Route::group(['middleware'=>['cross','auth']],function (){
     Route::get('businesses','BusinessController@getAllBusinesses');
 //        Route::put('business/{id}','BusinessController@edit');
     Route::delete('business/{id}','BusinessController@delete');
-    Route::get('business/{id}','BusinessController@getBusiness');
+    Route::get('business/{id}','BusinessController@business');
     Route::get('types','BusinessController@getTypes');
     Route::post('user','UserController@editUser');
     Route::get('admins','UserController@listAdmin');

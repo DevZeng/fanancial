@@ -59,6 +59,16 @@ class BusinessController extends Controller
     {
         $business = Business::findOrFail($id);
         $typeArr = $business->types()->pluck('type_id')->toArray();
+        $business->types = Type::whereIn('id',$typeArr)->get();
+        return response()->json([
+            'msg'=>'ok',
+            'data'=> $business
+        ]);
+    }
+    public function business($id)
+    {
+        $business = Business::findOrFail($id);
+        $typeArr = $business->types()->pluck('type_id')->toArray();
         $business->types = Type::whereIn('id',$typeArr)->pluck('id')->toArray();
         return response()->json([
             'msg'=>'ok',
