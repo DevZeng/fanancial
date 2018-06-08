@@ -631,11 +631,32 @@ class UserController extends Controller
     public function createWithdrawApply(Request $post)
     {
         $uid = getUserToken($post->token);
+        $date = explode('/',$post->date);
+        if (count($date)!=2){
+            return response()->json([
+                'msg'=>'日期格式不正确！'
+            ],400);
+        }
+        if ($date[1]>=date('m',time())){
+            return response()->json([
+                'msg'=>'当前月份的佣金尚未结算！'
+            ],400);
+        }
+        $amount = BrokerageLog::where('user_id','=',$uid)->where('state','=',0)->whereYear('created_at',$date[0])->whereMonth('created_at', $date[1])->sum('brokerage');
+        $date = $date[0].'-'.$date[1];
+
+        $count = WithdrawApply::where('user_id','=',$uid)->where('date','=',$date)->count();
+        if ($count!=0){
+            return response()->json([
+                'msg'=>'已提交过代理申请，请等待平台发放！'
+            ],400);
+        }
         $apply = new WithdrawApply();
         $apply->name = $post->name;
         $apply->bank = $post->bank;
         $apply->account = $post->account;
-        $apply->date = $post->date;
+        $apply->date = $date;
+        $apply->amount = $amount;
         $apply->user_id = $uid;
         if ($apply->save()){
             return response()->json([
