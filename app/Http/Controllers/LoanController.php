@@ -297,8 +297,13 @@ class LoanController extends Controller
                         $price = $loan->brokerage * $ratio;
                     }elseif ($item->level =='B'){
                         $ratio = ProxyRatio::where('user_id','=',$user->id)->pluck('ratio')->first();
-                        $ratio = ($ratio/100)*($config->rate/100);
-                        $price = $loan->brokerage * (1-$ratio);
+                        if ($ratio){
+                            $ratio = ($ratio/100)*($config->rate/100);
+                        }else{
+                            $ratio = $config->rate/100;
+                        }
+
+                        $price = $loan->brokerage * $ratio;
                     }else{
                         $count = WeChatUser::where('proxy_id','=',$item->id)->count();
                         if ($count>3){
