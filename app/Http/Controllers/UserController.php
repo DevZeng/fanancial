@@ -875,7 +875,8 @@ class UserController extends Controller
         if (!empty($loans)){
             foreach ($loans as $loan){
                 $loan->proxy = WeChatUser::find($loan->proxy_id)->name;
-                $loan->brokerage = BrokerageLog::where('loan_id','=',$loan->id)->where('user_id','=',$loan->user_id)->pluck('brokerage')->first();
+                $brokerage = BrokerageLog::where('loan_id','=',$loan->id)->where('user_id','=',$loan->user_id)->pluck('brokerage')->first();
+                $loan->brokerage = $brokerage?$brokerage:0;
                 $user = WeChatUser::find($loan->user_id);
                 $loan->name = $user->name;
                 $loan->phone = $user->phone;
