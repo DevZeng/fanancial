@@ -643,6 +643,11 @@ class UserController extends Controller
             ],400);
         }
         $amount = BrokerageLog::where('user_id','=',$uid)->where('state','=',0)->whereYear('created_at',$date[0])->whereMonth('created_at', $date[1])->sum('brokerage');
+        if ($amount==0){
+            return response()->json([
+                'msg'=>'当前月份佣金为0！'
+            ],400);
+        }
         $date = $date[0].'-'.$date[1];
 
         $count = WithdrawApply::where('user_id','=',$uid)->where('date','=',$date)->count();
