@@ -422,6 +422,11 @@ class UserController extends Controller
         $apply = ProxyApply::findOrFail($id);
         $state = Input::get('state');
         $config = SysConfig::first();
+        $url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s';
+//            $code = $post->code;
+        $url = sprintf($url,config('wxxcx.appId'),config('wxxcx.appSecret'));
+        $wechat = new Wxxcx(config('wxxcx.app_id'),config('wxxcx.app_secret'));
+
         if ($state==1){
             $apply->state = 1;
             $user = WeChatUser::find($apply->user_id);
@@ -443,11 +448,63 @@ class UserController extends Controller
                 $user->level = 'C';
                 $user->save();
             }
+            $data = $wechat->request($url);
+            if (isset($data['access_token'])){
+                $swap = $apply->upgrade==1?'升级':'申请';
+                $sendUrl = 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token='.$data['access_token'];
+                $data = [
+                    "touser"=>$user->open_id,
+                    "template_id"=>'s3hZxG7qkzfd1u_YshNkvl42zNRgqv_MRPrB_TM47kE',
+//                    "form_id"=> $loan->formId,
+                    "url"=>"https://www.gzzrdc.com/Agentinfo",
+                    "data"=>[
+                        "first"=>[
+                            'value'=>'代理申请结果通知'
+                        ],
+                        "keyword1"=>[
+                            "value"=>$swap.$apply->after_level.'级代理申请结果'
+                        ],
+                        "keyword2"=>[
+                            "value"=>'通过'
+                        ],
+                        "remark"=>[
+                            "value"=>"感谢您的使用！"
+                        ]
+                    ]
+                ];
+                $receive = $wechat->request($sendUrl,json_encode($data));
+            }
 //            $user->code= uniqid();
 
         }else{
+            $user = WeChatUser::find($apply->user_id);
             $apply->state = 2;
-
+            $data = $wechat->request($url);
+            if (isset($data['access_token'])){
+                $swap = $apply->upgrade==1?'升级':'申请';
+                $sendUrl = 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token='.$data['access_token'];
+                $data = [
+                    "touser"=>$user->open_id,
+                    "template_id"=>'s3hZxG7qkzfd1u_YshNkvl42zNRgqv_MRPrB_TM47kE',
+//                    "form_id"=> $loan->formId,
+                    "url"=>"https://www.gzzrdc.com/Agentinfo",
+                    "data"=>[
+                        "first"=>[
+                            'value'=>'代理申请结果通知'
+                        ],
+                        "keyword1"=>[
+                            "value"=>$swap.$apply->after_level.'级代理申请结果'
+                        ],
+                        "keyword2"=>[
+                            "value"=>'不通过'
+                        ],
+                        "remark"=>[
+                            "value"=>"感谢您的使用！"
+                        ]
+                    ]
+                ];
+                $receive = $wechat->request($sendUrl,json_encode($data));
+            }
         }
         $apply->save();
         return response()->json([
