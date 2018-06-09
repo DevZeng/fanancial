@@ -450,10 +450,25 @@ class UserController extends Controller
                         $proxy->save();
                     }
 
+                }else{
+                    $ratio = ProxyRatio::where('user_id','=',$user->id)->first();
+                    if (!$ratio){
+                        $ratio = new ProxyRatio();
+                        $ratio->user_id = $user->id;
+                        $ratio->ratio = 60;
+                        $ratio->save();
+                    }
                 }
 
             }else{
                 $user->level = 'C';
+                $ratio = ProxyRatio::where('user_id','=',$user->id)->first();
+                if (!$ratio){
+                    $ratio = new ProxyRatio();
+                    $ratio->user_id = $user->id;
+                    $ratio->ratio = 60;
+                    $ratio->save();
+                }
                 $user->save();
             }
             $data = $wechat->request($url);
