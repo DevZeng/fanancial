@@ -217,6 +217,9 @@ class UserController extends Controller
         $apply->account = $post->account;
         $apply->before_level = $user->level;
         $code = $post->code;
+        $user->name = empty($user->name)?$post->name:$user->name;
+        $user->phone = empty($user->phone)?$post->phone:$user->phone;
+        $user->save();
         if ($code){
             if ($code==$config->levelBCode||$code==$config->levelCCode){
                 $apply->type = 2;
@@ -655,7 +658,7 @@ class UserController extends Controller
         $apply = new ProxyApply();
         $apply->user_id = $uid;
         $apply->proxy_id = $proxy_id;
-        $apply->name = $user->nickname;
+        $apply->name = empty($user->name)?$user->nickname:$user->name;
         $apply->phone = $user->phone;
         $apply->bank = $swap?$swap->bank:'';
         $apply->account = $swap?$swap->account:'';
