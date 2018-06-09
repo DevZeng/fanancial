@@ -644,14 +644,16 @@ class UserController extends Controller
     {
         $proxy_id = getUserToken($post->token);
         $uid = $post->id;
+        $user = WeChatUser::find($uid);
         $config = SysConfig::first();
+        $swap = ProxyApply::where('user_id','=',$uid)->where('state','=',1)->where('upgrade','=',0)->first();
         $apply = new ProxyApply();
         $apply->user_id = $uid;
         $apply->proxy_id = $proxy_id;
-        $apply->name = 'C级代理升级B级代理';
-        $apply->phone = '';
-        $apply->bank = '';
-        $apply->account = '';
+        $apply->name = $user->name;
+        $apply->phone = $user->phone;
+        $apply->bank = $swap?$swap->bank:'';
+        $apply->account = $swap?$swap->account:'';
         $apply->type = 2;
         $apply->upgrade = 1;
         $apply->after_level = 'B';
