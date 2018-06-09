@@ -293,12 +293,19 @@ class LoanController extends Controller
 //                dd($list);
                 $swap = 0;
                 foreach ($list as $item){
+                    $brokerage = new BrokerageLog();
                     if ($item->level=='C'){
+                        $brokerage->type = 1;
                         $ratio = ProxyRatio::where('user_id','=',$item->id)->pluck('ratio')->first();
                         $ratio = ($ratio/100)*($config->rate/100);
                         $swap = $ratio;
                         $price = $loan->brokerage * $ratio;
                     }elseif ($item->level =='B'){
+                        if ($item->id==$loan->proxy_id){
+                            $brokerage->type = 1;
+                        }else{
+                            $brokerage->type = 2;
+                        }
                         $ratio = ProxyRatio::where('user_id','=',$item->id)->pluck('ratio')->first();
                         if ($ratio){
                             $ratio = ($ratio/100)*($config->rate/100);
@@ -307,6 +314,7 @@ class LoanController extends Controller
                         }
                         $price = $loan->brokerage * ($ratio-$swap);
                     }else{
+                        $brokerage->type = 3;
                         $count = WeChatUser::where('proxy_id','=',$item->id)->count();
                         if ($count>3){
                             $ratio = 0.1;
@@ -317,12 +325,8 @@ class LoanController extends Controller
                         }
                         $price = $loan->brokerage * $ratio;
                     }
-                    $brokerage = new BrokerageLog();
-                    if ($item->id==$loan->proxy_id){
-                        $brokerage->type = 1;
-                    }else{
-                        $brokerage->type = 2;
-                    }
+
+
 
                     $brokerage->user_id = $item->id;
                     $brokerage->proxy_id = $item->id;
