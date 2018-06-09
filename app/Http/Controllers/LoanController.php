@@ -425,8 +425,8 @@ class LoanController extends Controller
         $date = Input::get('date');
         $db = DB::table('brokerage_logs');
         if ($name){
-//            $idArr = WeChatUser::where('nickname','=',$name)->pluck('id')->toArray();
-            $db->where('proxy','=',$name);
+            $idArr = WeChatUser::where('name','like','%'.$name.'%')->pluck('id')->toArray();
+            $db->whereIn('proxy_id',$idArr);
         }
         if ($date){
             $date = strtotime($date);
