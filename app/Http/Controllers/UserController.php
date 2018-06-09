@@ -201,6 +201,7 @@ class UserController extends Controller
     public function applyProxy(Request $post)
     {
         $uid = getUserToken($post->token);
+        $user = WeChatUser::find($uid);
         $count = ProxyApply::where('user_id','=',$uid)->count();
         $config = SysConfig::first();
         if ($count>0){
@@ -214,15 +215,17 @@ class UserController extends Controller
         $apply->phone = $post->phone;
         $apply->bank = $post->bank;
         $apply->account = $post->account;
-
+        $apply->before_level = $user->level;
         $code = $post->code;
         if ($code){
             if ($code==$config->levelBCode||$code==$config->levelCCode){
                 $apply->type = 2;
+                $apply->after_level = $code==$config->levelBCode?'B':'C';
             }else{
                 $user = WeChatUser::where('code','=',$code)->first();
                 if (!empty($user)){
                     $apply->type = 1;
+                    $apply->after_level = 'B';
                 }else{
                     return response()->json([
                         'msg'=>'邀请码无效！'
@@ -231,11 +234,11 @@ class UserController extends Controller
             }
         }
         $apply->code = $post->code;
-        if ($config){
-            if ($apply->code==$config->levelBCode||$apply->code==$config->levelCCode){
-                $apply->type = 2;
-            }
-        }
+//        if ($config){
+//            if ($apply->code==$config->levelBCode||$apply->code==$config->levelCCode){
+//                $apply->type = 2;
+//            }
+//        }
         $apply->save();
         return response()->json([
             'msg'=>'ok'
@@ -594,6 +597,8 @@ class UserController extends Controller
         $apply->account = '';
         $apply->type = 2;
         $apply->upgrade = 1;
+        $apply->after_level = 'B';
+        $apply->before_level = 'C';
         $apply->code = $config->levelBCode;
         if ($apply->save()){
             return response()->json([
