@@ -324,8 +324,10 @@ class UserController extends Controller
         }else{
             $data = $db->limit($limit)->offset(($page-1)*$limit)->get();
         }
+        $count = $db->count();
         return response()->json([
             'msg'=>'ok',
+            'count'=>$count,
             'data'=>$data
         ]);
     }
