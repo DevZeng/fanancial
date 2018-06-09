@@ -425,11 +425,12 @@ class LoanController extends Controller
         $date = Input::get('date');
         $db = DB::table('brokerage_logs');
         if ($name){
-            $idArr = WeChatUser::where('nickname','=',$name)->pluck('id')->toArray();
-            $db->whereIn('proxy_id',$idArr);
+//            $idArr = WeChatUser::where('nickname','=',$name)->pluck('id')->toArray();
+            $db->where('proxy','=',$name);
         }
         if ($date){
-//            $db->whereMonth()
+            $date = strtotime($date);
+            $db->whereYear('created_at',date('Y',$date))->whereMonth('created_at', date('m',$date));
         }
         $list = $db->limit($limit)->offset(($page-1)*$limit)->orderBy('id','DESC')->get();
         foreach ($list as $item){

@@ -424,11 +424,24 @@ class UserController extends Controller
             $user = WeChatUser::find($apply->user_id);
             if ($config){
                 $user->level=$apply->code == $config->levelBCode?'B':'C';
+                $user->save();
+                if ($user->level=='B'){
+                    $proxy_id =$user->proxy_id;
+                    if ($proxy_id!=0){
+                        $proxy = WeChatUser::find($proxy_id);
+                        $count = WeChatUser::where('level','=','B')->where('proxy_id','=',$proxy_id)->count();
+                        $proxy->level = $count!=0?'A':$proxy->level;
+                        $proxy->save();
+                    }
+
+                }
+
             }else{
                 $user->level = 'C';
+                $user->save();
             }
 //            $user->code= uniqid();
-            $user->save();
+
         }else{
             $apply->state = 2;
 
@@ -569,15 +582,18 @@ class UserController extends Controller
     }
     public function upgrade(Request $post)
     {
+        $proxy_id = getUserToken($post->token);
         $uid = $post->id;
         $config = SysConfig::first();
         $apply = new ProxyApply();
         $apply->user_id = $uid;
+        $apply->proxy_id = $proxy_id;
         $apply->name = 'C级代理升级B级代理';
         $apply->phone = '';
         $apply->bank = '';
         $apply->account = '';
         $apply->type = 2;
+        $apply->upgrade = 1;
         $apply->code = $config->levelBCode;
         if ($apply->save()){
             return response()->json([
