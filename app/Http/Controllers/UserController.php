@@ -538,6 +538,10 @@ class UserController extends Controller
         foreach ($agents as $agent){
             $ratio = $agent->ratio()->pluck('ratio')->first();
             $agent->ratio = $ratio?$ratio:0;
+            $agent->personCount = WeChatUser::where('proxy_id','=',$agent->id)->count();
+            $agent->loanCount = Loan::where('proxy_id','=',$agent->id)->where('state','=',3)->count();
+            $agent->loanSum = Loan::where('proxy_id','=',$agent->id)->where('state','=',3)->sum('price');
+            $agent->loanUserCount = count(Loan::where('proxy_id','=',$agent->id)->groupBy('user_id')-
 //            $proxy = $agent->proxy()->where('state','=',2)->first();
 //            $agent->phone = $proxy->phone;
 //            $agent->name = $proxy->name;
