@@ -322,10 +322,10 @@ class UserController extends Controller
 //            dd($search);
             $db->where('name','like','%'.$search.'%')->orWhere('phone','like','%'.$search.'%');
             $count = $db->count();
-            $data =$db->limit($limit)->offset(($page-1)*$limit)->get();
+            $data =$db->limit($limit)->offset(($page-1)*$limit)->orderBy('id','DESC')->get();
         }else{
             $count = $db->count();
-            $data = $db->limit($limit)->offset(($page-1)*$limit)->get();
+            $data = $db->limit($limit)->offset(($page-1)*$limit)->orderBy('id','DESC')->get();
         }
 
         return response()->json([
