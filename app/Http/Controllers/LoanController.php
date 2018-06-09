@@ -447,6 +447,7 @@ class LoanController extends Controller
             $date = strtotime($date);
             $db->whereYear('created_at',date('Y',$date))->whereMonth('created_at', date('m',$date));
         }
+        $count = $db->count();
         $list = $db->limit($limit)->offset(($page-1)*$limit)->orderBy('id','DESC')->get();
         foreach ($list as $item){
             $item->loan = Loan::find($item->loan_id);
@@ -455,6 +456,7 @@ class LoanController extends Controller
         }
         return response()->json([
             'msg'=>'ok',
+            'count'=>$count,
             'data'=>$list
         ]);
     }
