@@ -949,7 +949,7 @@ class UserController extends Controller
         $count = ScanRecord::groupBy('user_id')->count();
         if (!empty($records)){
             foreach ($records as $record){
-                $record->username = WeChatUser::find($record->user_id)->nickname;
+                $record->user = WeChatUser::find($record->user_id);
             }
         }
         return response()->json([
