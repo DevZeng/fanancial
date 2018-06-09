@@ -471,15 +471,33 @@ class LoanController extends Controller
 //        var_dump($date);
 //        var_dump(strtotime($date));
 //        var_dump(date('Y',strtotime($date)));
-        $db = BrokerageLog::where('proxy_id','=',$uid)->where('state','=',0)->whereYear('created_at',$date[0])->whereMonth('created_at', $date[1]);
-        dd($db->get());
+        $amount = 0;
+        $direct = 0;
+        $proxy = 0;
+        $reward = 0;
+        $data = BrokerageLog::where('proxy_id','=',$uid)->where('state','=',0)->whereYear('created_at',$date[0])->whereMonth('created_at', $date[1])->get();
+        if (!empty($data)){
+            foreach ($data as $datum){
+                $amount+=$datum->brokerage;
+                if ($datum->type==1){
+                    $direct+=$datum->brokerage;
+                }
+                if ($datum->type==2){
+                    $proxy+=$datum->brokerage;
+                }
+                if ($datum->type==3){
+                    $reward+=$datum->brokerage;
+                }
+            }
+        }
+//        dd($db->get());
         return response()->json([
             'msg'=>'ok',
             'data'=>[
-                'amount'=>$db->sum('brokerage'),
-                'direct'=>$db->where('type','=',1)->sum('brokerage'),
-                'proxy'=>$db->where('type','=',2)->sum('brokerage'),
-                'reward'=>$db->where('type','=',3)->sum('brokerage')
+                'amount'=>$amount,
+                'direct'=>$direct,
+                'proxy'=>$proxy,
+                'reward'=>$reward
             ]
         ]);
     }
