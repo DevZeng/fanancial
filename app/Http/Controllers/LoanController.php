@@ -472,7 +472,8 @@ class LoanController extends Controller
             'data'=>[
                 'amount'=>$db->sum('brokerage'),
                 'direct'=>$db->where('type','=',1)->sum('brokerage'),
-                'proxy'=>$db->where('type','=',2)->sum('brokerage')
+                'proxy'=>$db->where('type','=',2)->sum('brokerage'),
+                'reward'=>$db->where('type','=',3)->sum('brokerage')
             ]
         ]);
     }
