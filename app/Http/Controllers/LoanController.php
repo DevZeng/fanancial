@@ -15,6 +15,7 @@ use App\Models\Rate;
 use App\Models\SysConfig;
 use App\Models\WeChatUser;
 use App\User;
+use function GuzzleHttp\Psr7\uri_for;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -423,7 +424,12 @@ class LoanController extends Controller
         $page = Input::get('page',1);
         $name = Input::get('name');
         $date = Input::get('date');
+        $level = Input::get('level');
         $db = DB::table('brokerage_logs');
+        if ($level){
+            $idArr = WeChatUser::where('level','=',$level)->pluck('id')->toArray();
+            $db->whereIn('proxy_id',$idArr);
+        }
         if ($name){
             $idArr = WeChatUser::where('name','like','%'.$name.'%')->pluck('id')->toArray();
             $db->whereIn('proxy_id',$idArr);
