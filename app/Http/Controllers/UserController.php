@@ -655,7 +655,7 @@ class UserController extends Controller
         $apply = new ProxyApply();
         $apply->user_id = $uid;
         $apply->proxy_id = $proxy_id;
-        $apply->name = $user->name;
+        $apply->name = $user->nickname;
         $apply->phone = $user->phone;
         $apply->bank = $swap?$swap->bank:'';
         $apply->account = $swap?$swap->account:'';
