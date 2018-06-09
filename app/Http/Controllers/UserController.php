@@ -228,7 +228,7 @@ class UserController extends Controller
                 $user = WeChatUser::where('code','=',$code)->first();
                 if (!empty($user)){
                     $apply->type = 1;
-                    $apply->after_level = 'B';
+                    $apply->after_level = 'C';
                 }else{
                     return response()->json([
                         'msg'=>'邀请码无效！'
