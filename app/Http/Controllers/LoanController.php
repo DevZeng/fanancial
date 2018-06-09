@@ -292,6 +292,7 @@ class LoanController extends Controller
                 $list = $this->getUsers($user);
 //                dd($list);
                 $swap = 0;
+                $userName = '';
                 foreach ($list as $item){
                     $brokerage = new BrokerageLog();
                     if ($item->level=='C'){
@@ -301,6 +302,7 @@ class LoanController extends Controller
                         $swap = $ratio;
                         $price = $loan->brokerage * $ratio;
                     }elseif ($item->level =='B'){
+                        $userName = $item->name;
                         if ($item->id==$loan->proxy_id){
                             $brokerage->type = 1;
                         }else{
@@ -315,6 +317,9 @@ class LoanController extends Controller
                         $price = $loan->brokerage * ($ratio-$swap);
                     }else{
                         $brokerage->type = 3;
+                        if ($userName!=''){
+                            $brokerage->remark = '来自'.$userName.'的奖励';
+                        }
                         $count = WeChatUser::where('proxy_id','=',$item->id)->count();
                         if ($count>3){
                             $ratio = 0.1;
@@ -467,6 +472,7 @@ class LoanController extends Controller
 //        var_dump(strtotime($date));
 //        var_dump(date('Y',strtotime($date)));
         $db = BrokerageLog::where('proxy_id','=',$uid)->where('state','=',0)->whereYear('created_at',$date[0])->whereMonth('created_at', $date[1]);
+        dd($db->get());
         return response()->json([
             'msg'=>'ok',
             'data'=>[
