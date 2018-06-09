@@ -308,12 +308,12 @@ class LoanController extends Controller
                         }else{
                             $brokerage->type = 2;
                         }
-                        $ratio = ProxyRatio::where('user_id','=',$item->id)->pluck('ratio')->first();
-                        if ($ratio){
-                            $ratio = ($ratio/100)*($config->rate/100);
-                        }else{
+//                        $ratio = ProxyRatio::where('user_id','=',$item->id)->pluck('ratio')->first();
+//                        if ($ratio){
+//                            $ratio = ($ratio/100)*($config->rate/100);
+//                        }else{
                             $ratio = $config->rate/100;
-                        }
+//                        }
                         $price = $loan->brokerage * ($ratio-$swap);
                     }else{
                         $brokerage->type = 3;
