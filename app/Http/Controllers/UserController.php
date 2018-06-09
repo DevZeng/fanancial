@@ -1020,6 +1020,7 @@ class UserController extends Controller
         $user = WeChatUser::find($uid);
         $user->apply = ProxyApply::where('user_id','=',$user->id)->where('state','!=',2)->count();
         $user->apply = $user->apply==0?0:1;
+        $user->level = $user->level=='A'?'B':$user->level;
         return response()->json([
             'msg'=>'ok',
             'data'=>$user
