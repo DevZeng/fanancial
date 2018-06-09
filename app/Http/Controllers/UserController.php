@@ -320,11 +320,14 @@ class UserController extends Controller
         $db = ProxyApply::where('type','=',2);
         if ($search){
 //            dd($search);
-            $data = $db->where('name','like','%'.$search.'%')->orWhere('phone','like','%'.$search.'%')->limit($limit)->offset(($page-1)*$limit)->get();
+            $db->where('name','like','%'.$search.'%')->orWhere('phone','like','%'.$search.'%');
+            $count = $db->count();
+            $data =$db->limit($limit)->offset(($page-1)*$limit)->get();
         }else{
+            $count = $db->count();
             $data = $db->limit($limit)->offset(($page-1)*$limit)->get();
         }
-        $count = $db->count();
+
         return response()->json([
             'msg'=>'ok',
             'count'=>$count,
