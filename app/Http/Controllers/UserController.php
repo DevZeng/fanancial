@@ -479,7 +479,7 @@ class UserController extends Controller
                     "touser"=>$user->open_id,
                     "template_id"=>'s3hZxG7qkzfd1u_YshNkvl42zNRgqv_MRPrB_TM47kE',
 //                    "form_id"=> $loan->formId,
-                    "url"=>"https://www.gzzrdc.com/Agentinfo",
+                    "url"=>"https://www.gzzrdc.com/Center",
                     "data"=>[
                         "first"=>[
                             'value'=>'代理申请结果通知'
