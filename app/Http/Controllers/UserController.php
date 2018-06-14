@@ -1004,6 +1004,27 @@ class UserController extends Controller
     {
         return Socialite::with('weixin')->redirect();
     }
+    public function UserBill(Request $post)
+    {
+        $user_id = $post->user_id;
+        $page = $post->page ? $post->page : 1;
+        $limit = $post->limit ? $post->limit : 10;
+        $loans = Loan::where('proxy_id','=',$user_id)->limit($limit)->offset(($page-1)*$limit)->orderBy('id','DESC')->get();
+        if (!empty($loans)){
+            foreach ($loans as $loan){
+                $loan->proxy = WeChatUser::find($loan->proxy_id)->name;
+                $brokerage = BrokerageLog::where('loan_id','=',$loan->id)->where('user_id','=',$loan->proxy_id)->pluck('brokerage')->first();
+                $loan->brokerage = $brokerage?$brokerage:0;
+//                $user = WeChatUser::find($loan->user_id);
+//                $loan->name = $user->name;
+//                $loan->phone = $user->phone;
+            }
+        }
+        return response()->json([
+            'msg'=>'ok',
+            'data'=>$loans
+        ]);
+    }
     public function myBill(Request $post)
     {
         $uid = getUserToken($post->token);
