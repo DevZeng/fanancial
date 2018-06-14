@@ -135,7 +135,7 @@ class LoanController extends Controller
         $page = Input::get('page',1);
         $db = DB::table('loans');
         if ($search){
-            $db->where('name','=',$search)->orWhere('phone','=',$search);
+            $db->where('name','like','%'.$search.'%')->orWhere('phone','like','%'.$search.'%');
         }
         if ($number){
             $db->where('number','like','%'.$number.'%');
