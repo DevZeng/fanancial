@@ -441,6 +441,7 @@ class UserController extends Controller
             $user = WeChatUser::find($apply->user_id);
             if ($apply->type==1){
                 $user->proxy_id = $apply->proxy_id;
+                $user->level = $apply->after_level;
             }
             if ($config){
                 $user->level=$apply->code == $config->levelBCode?'B':'C';
