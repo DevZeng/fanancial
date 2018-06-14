@@ -305,9 +305,9 @@ class UserController extends Controller
             $datum->loanCount = Loan::where('proxy_id','=',$datum->id)->where('state','=',3)->count();
             $datum->loanPersonCount = count(Loan::where('proxy_id','=',$datum->id)->where('state','=',3)->groupBy('user_id')->pluck('user_id'));
             $datum->loanSum = Loan::where('proxy_id','=',$datum->id)->where('state','=',3)->sum('price');
-            $datum->brokerage = sprintf('%2f',BrokerageLog::where('user_id','=',$datum->id)->sum('brokerage'));
-            $datum->pay = sprintf('%2f',BrokerageLog::where('user_id','=',$datum->id)->where('state','=',1)->sum('brokerage'));
-            $datum->need = sprintf('%2f',BrokerageLog::where('user_id','=',$datum->id)->where('state','=',0)->sum('brokerage'));
+            $datum->brokerage = sprintf('%.2f',BrokerageLog::where('user_id','=',$datum->id)->sum('brokerage'));
+            $datum->pay = sprintf('%.2f',BrokerageLog::where('user_id','=',$datum->id)->where('state','=',1)->sum('brokerage'));
+            $datum->need = sprintf('%.2f',BrokerageLog::where('user_id','=',$datum->id)->where('state','=',0)->sum('brokerage'));
             $datum->bank = ProxyApply::where('state','=',2)->where('user_id','=',$datum->id)->pluck('account')->first();
         }
         return response()->json([
