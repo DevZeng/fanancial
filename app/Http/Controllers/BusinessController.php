@@ -32,7 +32,7 @@ class BusinessController extends Controller
         $business->intro = $post->intro?$post->intro:$business->intro;
         $business->state = $post->state?$post->state:$business->state;
         $business->sort = $post->sort?$post->sort:$business->sort;
-        $business->condition = $post->condition?$business->condition:$post->condition;
+        $business->condition = $post->condition?$post->condition:$business->condition;
         $types = $post->types;
         $business->save();
         if (!empty($types)){
