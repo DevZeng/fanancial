@@ -228,6 +228,7 @@ class UserController extends Controller
                 $user = WeChatUser::where('code','=',$code)->first();
                 if (!empty($user)){
                     $apply->type = 1;
+                    $apply->proxy_id = $user->id;
                     $apply->after_level = 'C';
                 }else{
                     return response()->json([
@@ -434,10 +435,13 @@ class UserController extends Controller
 //            $code = $post->code;
         $url = sprintf($url,config('wxxcx.appId'),config('wxxcx.appSecret'));
         $wechat = new Wxxcx(config('wxxcx.app_id'),config('wxxcx.app_secret'));
-
         if ($state==1){
             $apply->state = 1;
+
             $user = WeChatUser::find($apply->user_id);
+            if ($apply->type==1){
+                $user->proxy_id = $apply->proxy_id;
+            }
             if ($config){
                 $user->level=$apply->code == $config->levelBCode?'B':'C';
                 $user->save();
