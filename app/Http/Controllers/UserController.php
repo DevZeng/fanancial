@@ -202,7 +202,7 @@ class UserController extends Controller
     {
         $uid = getUserToken($post->token);
         $user = WeChatUser::find($uid);
-        $count = ProxyApply::where('user_id','=',$uid)->count();
+        $count = ProxyApply::where('user_id','=',$uid)->where('state','=',0)->count();
         $config = SysConfig::first();
         if ($count>0){
             return response()->json([
