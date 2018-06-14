@@ -317,22 +317,29 @@ class LoanController extends Controller
 //                        }
                         $price = $loan->brokerage * ($ratio-$swap);
                     }else{
-                        $brokerage->type = 3;
-                        if ($userName!=''){
-                            $brokerage->remark = '来自'.$userName.'的奖励';
-                        }
-                        $count = WeChatUser::where('proxy_id','=',$item->id)->count();
-                        if ($count>3){
-                            $ratio = 0.1;
-                        }elseif (2<$count && $count<=3){
-                            $ratio = 0.05;
+                        if ($item->id==$loan->proxy_id){
+                            $brokerage->type = 1;
+                            $ratio = $config->rate/100;
+                            $price = $loan->brokerage * ($ratio-$swap);
                         }else{
-                            $ratio = 0.03;
+                            $brokerage->type = 3;
+                            if ($userName!=''){
+                                $brokerage->remark = '来自'.$userName.'的奖励';
+                            }
+                            $count = WeChatUser::where('proxy_id','=',$item->id)->count();
+                            if ($count>3){
+                                $ratio = 0.1;
+                            }elseif (2<$count && $count<=3){
+                                $ratio = 0.05;
+                            }else{
+                                $ratio = 0.03;
+                            }
+                            $price = $loan->brokerage * $ratio;
                         }
-                        $price = $loan->brokerage * $ratio;
+
+
+
                     }
-
-
 
                     $brokerage->user_id = $item->id;
                     $brokerage->proxy_id = $item->id;
