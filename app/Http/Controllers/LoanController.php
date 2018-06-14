@@ -119,7 +119,7 @@ class LoanController extends Controller
                 'handle'=>$handle,
                 'finish'=>$finish,
                 'cancel'=>$cancel,
-                'apply'=>ProxyApply::where('type','=',2)->where('state','=',0)->where('code','=',100000+$uid)->count()
+                'apply'=>ProxyApply::where('type','=',1)->where('state','=',0)->where('code','=',$user->code)->count()
             ]
         ]);
     }
