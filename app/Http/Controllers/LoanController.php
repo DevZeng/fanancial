@@ -301,6 +301,7 @@ class LoanController extends Controller
                         $ratio = ($ratio/100)*($config->rate/100);
                         $swap = $ratio;
                         $price = $loan->brokerage * $ratio;
+                        $userName = $item->name;
                     }elseif ($item->level =='B'){
                         $userName = $item->name;
                         if ($item->id==$loan->proxy_id){
