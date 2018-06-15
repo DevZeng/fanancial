@@ -293,70 +293,107 @@ class LoanController extends Controller
 //                dd($list);
                 $swap = 0;
                 $userName = '';
-                foreach ($list as $item){
+                for ($i=0;$i<count($list);$i++){
                     $brokerage = new BrokerageLog();
-                    if ($item->level=='C'){
+                    if ($i==0){
                         $brokerage->type = 1;
-                        $ratio = ProxyRatio::where('user_id','=',$item->id)->pluck('ratio')->first();
+                        $ratio = ProxyRatio::where('user_id','=',$list[$i]->id)->pluck('ratio')->first();
+                        $ratio = $ratio?$ratio:60;
                         $ratio = ($ratio/100)*($config->rate/100);
                         $swap = $ratio;
                         $price = $loan->brokerage * $ratio;
-                        $userName = $item->name;
-                    }elseif ($item->level =='B'){
-                        $userName = $item->name;
-                        if ($item->id==$loan->proxy_id){
-                            $brokerage->type = 1;
-                        }else{
-                            $brokerage->type = 2;
-                        }
-//                        $ratio = ProxyRatio::where('user_id','=',$item->id)->pluck('ratio')->first();
-//                        if ($ratio){
-//                            $ratio = ($ratio/100)*($config->rate/100);
-//                        }else{
-                            $ratio = $config->rate/100;
-//                        }
+                    }elseif($i==1){
+                        $brokerage->type = 2;
+                        $userName = $list[$i]->name;
+                        $ratio = $config->rate/100;
                         $price = $loan->brokerage * ($ratio-$swap);
-                    }else{
-                        if ($item->id==$loan->proxy_id){
-                            $brokerage->type = 1;
-                            $ratio = $config->rate/100;
-                            $price = $loan->brokerage * ($ratio-$swap);
-                        }else{
-                            $brokerage->type = 3;
-                            if ($userName!=''){
-                                $brokerage->remark = '来自'.$userName.'的奖励';
-                            }
-                            $count = WeChatUser::where('proxy_id','=',$item->id)->count();
-                            if ($count>3){
-                                $ratio = 0.1;
-                            }elseif (2<$count && $count<=3){
-                                $ratio = 0.05;
-                            }else{
-                                $ratio = 0.03;
-                            }
-                            $price = $loan->brokerage * $ratio;
+                    }elseif($i==2){
+                        if ($userName!=''){
+                            $brokerage->remark = '来自'.$userName.'的奖励';
                         }
-
-
-
+                        $count = WeChatUser::where('proxy_id','=',$list[$i]->id)->count();
+                        if ($count>3){
+                            $ratio = 0.1;
+                        }elseif (2<$count && $count<=3){
+                            $ratio = 0.05;
+                        }else{
+                            $ratio = 0.03;
+                        }
+                        $price = $loan->brokerage * $ratio;
                     }
-
-                    $brokerage->user_id = $item->id;
-                    $brokerage->proxy_id = $item->id;
+                    $brokerage->user_id = $list[$i]->id;
+                    $brokerage->proxy_id = $list[$i]->id;
                     $brokerage->brokerage = $price;
                     $brokerage->loan_id = $loan->id;
 //                    dd($brokerage);
                     $brokerage->save();
                 }
+//                foreach ($list as $item){
+//                    $brokerage = new BrokerageLog();
+//                    if ($item->level=='C'){
+//                        $brokerage->type = 1;
+//                        $ratio = ProxyRatio::where('user_id','=',$item->id)->pluck('ratio')->first();
+//                        $ratio = ($ratio/100)*($config->rate/100);
+//                        $swap = $ratio;
+//                        $price = $loan->brokerage * $ratio;
+//                        $userName = $item->name;
+//                    }elseif ($item->level =='B'){
+//                        $userName = $item->name;
+//                        if ($item->id==$loan->proxy_id){
+//                            $brokerage->type = 1;
+//                        }else{
+//                            $brokerage->type = 2;
+//                        }
+////                        $ratio = ProxyRatio::where('user_id','=',$item->id)->pluck('ratio')->first();
+////                        if ($ratio){
+////                            $ratio = ($ratio/100)*($config->rate/100);
+////                        }else{
+//                            $ratio = $config->rate/100;
+////                        }
+//                        $price = $loan->brokerage * ($ratio-$swap);
+//                    }else{
+//                        if ($item->id==$loan->proxy_id){
+//                            $brokerage->type = 1;
+//                            $ratio = $config->rate/100;
+//                            $price = $loan->brokerage * ($ratio-$swap);
+//                        }else{
+//                            $brokerage->type = 3;
+//                            if ($userName!=''){
+//                                $brokerage->remark = '来自'.$userName.'的奖励';
+//                            }
+//                            $count = WeChatUser::where('proxy_id','=',$item->id)->count();
+//                            if ($count>3){
+//                                $ratio = 0.1;
+//                            }elseif (2<$count && $count<=3){
+//                                $ratio = 0.05;
+//                            }else{
+//                                $ratio = 0.03;
+//                            }
+//                            $price = $loan->brokerage * $ratio;
+//                        }
+//
+//
+//
+//                    }
+//
+//                    $brokerage->user_id = $item->id;
+//                    $brokerage->proxy_id = $item->id;
+//                    $brokerage->brokerage = $price;
+//                    $brokerage->loan_id = $loan->id;
+////                    dd($brokerage);
+//                    $brokerage->save();
+//                }
 //                $list =
 //                dd($list);
             }
 
             $log = new LoanLog();
+            $log->user_id = 1;
             $log->user_id = Auth::id();
             $log->loan_id = $id;
             $log->detail = '发放贷款';
             $log->username = Auth::user()->username;
+//            $log->username = 'devzeng';
             $log->save();
             DB::commit();
             return response()->json([
@@ -401,19 +438,35 @@ class LoanController extends Controller
     }
     public function getUsers($user,&$data=[])
     {
-//        dd($user);
-        if (!empty($user)){
-//            if ($user->level!='A'){
-                if ($user->proxy_id!=0&&$user->level!='A'){
+
+        for ($i=0;$i<=2;$i++){
+//            var_dump($user[$i]);
+            if (!empty($user)){
+                if ($user->proxy_id!=0){
                     array_push($data,$user);
-                    $swap = WeChatUser::find($user->proxy_id);
+                    $user = WeChatUser::find($user->proxy_id);
 //                var_dump($swap);
-                    $this->getUsers($swap,$data);
+//                    $this->getUsers($swap,$data);
                 }else{
                     array_push($data,$user);
+                    $user = null;
                 }
-//            }
+            }
         }
+//        dd($data);
+//        dd($user);
+//        if (!empty($user)){
+////            if ($user->level!='A'){
+//                if ($user->proxy_id!=0&&$user->level!='A'){
+//                    array_push($data,$user);
+//                    $swap = WeChatUser::find($user->proxy_id);
+////                var_dump($swap);
+//                    $this->getUsers($swap,$data);
+//                }else{
+//                    array_push($data,$user);
+//                }
+////            }
+//        }
         return $data;
     }
 

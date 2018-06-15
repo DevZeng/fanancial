@@ -448,12 +448,12 @@ class UserController extends Controller
                 $user->save();
                 if ($user->level=='B'){
                     $proxy_id =$user->proxy_id;
-                    if ($proxy_id!=0){
-                        $proxy = WeChatUser::find($proxy_id);
-//                        $count = WeChatUser::where('level','=','B')->where('proxy_id','=',$proxy_id)->count();
-                        $proxy->level ='A';
-                        $proxy->save();
-                    }
+//                    if ($proxy_id!=0){
+//                        $proxy = WeChatUser::find($proxy_id);
+////                        $count = WeChatUser::where('level','=','B')->where('proxy_id','=',$proxy_id)->count();
+//                        $proxy->level ='A';
+//                        $proxy->save();
+//                    }
 
                 }else{
                     $ratio = ProxyRatio::where('user_id','=',$user->id)->first();

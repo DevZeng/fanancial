@@ -25,11 +25,11 @@ Route::post('upload','SystemController@upload');
 
 Route::get('weixin/callback','UserController@WeChatCallback');
 Route::get('weixin','UserController@redirectToProvider');
-
+Route::get('pay/loan/{id}','LoanController@payLoan');
 Route::group(['middleware'=>['cross','auth']],function (){
 
     Route::get('assesses','LoanController@getAssesses');
-    Route::get('pay/loan/{id}','LoanController@payLoan');
+
     Route::get('users','UserController@listUsers');
     Route::post('permission','UserController@createPermission');
     Route::get('permissions','UserController@getPermissions');
