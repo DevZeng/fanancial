@@ -800,7 +800,7 @@ class UserController extends Controller
     }
     public function userData()
     {
-        $date = Input::get('date');
+        $date = Input::get('date',date('Y-m-d'));
         $limit = Input::get('limit',10);
         $page = Input::get('page',1);
         $count = WeChatUser::where('level','!=','D')->count();
@@ -812,9 +812,9 @@ class UserController extends Controller
             $proxy->loanCount = Loan::where('proxy_id','=',$proxy->id)->where('state','=',3)->whereYear('created_at',date('Y',strtotime($date)))->whereMonth('created_at', date('m',strtotime($date)))->count();
             $proxy->loanPersonCount = count(Loan::where('proxy_id','=',$proxy->id)->where('state','=',3)->whereYear('created_at',date('Y',strtotime($date)))->whereMonth('created_at', date('m',strtotime($date)))->groupBy('user_id')->pluck('user_id'));
             $proxy->loanSum = Loan::where('proxy_id','=',$proxy->id)->where('state','=',3)->whereYear('created_at',date('Y',strtotime($date)))->whereMonth('created_at', date('m',strtotime($date)))->sum('brokerage');
-            $proxy->brokerage = BrokerageLog::where('user_id','=',$proxy->id)->whereYear('created_at',date('Y',strtotime($date)))->whereMonth('created_at', date('m',strtotime($date)))->sum('brokerage');
-            $proxy->pay = BrokerageLog::where('user_id','=',$proxy->id)->where('state','=',1)->whereYear('created_at',date('Y',strtotime($date)))->whereMonth('created_at', date('m',strtotime($date)))->sum('brokerage');
-            $proxy->need = BrokerageLog::where('user_id','=',$proxy->id)->where('state','=',0)->whereYear('created_at',date('Y',strtotime($date)))->whereMonth('created_at', date('m',strtotime($date)))->sum('brokerage');
+            $proxy->brokerage = sprintf('%.2f',BrokerageLog::where('user_id','=',$proxy->id)->whereYear('created_at',date('Y',strtotime($date)))->whereMonth('created_at', date('m',strtotime($date)))->sum('brokerage'));
+            $proxy->pay = sprintf('%.2f',BrokerageLog::where('user_id','=',$proxy->id)->where('state','=',1)->whereYear('created_at',date('Y',strtotime($date)))->whereMonth('created_at', date('m',strtotime($date)))->sum('brokerage'));
+            $proxy->need = sprintf('%.2f',BrokerageLog::where('user_id','=',$proxy->id)->where('state','=',0)->whereYear('created_at',date('Y',strtotime($date)))->whereMonth('created_at', date('m',strtotime($date)))->sum('brokerage'));
         }
         return response()->json([
             'msg'=>'ok',
