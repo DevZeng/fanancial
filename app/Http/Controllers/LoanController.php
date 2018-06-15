@@ -504,7 +504,7 @@ class LoanController extends Controller
             $db->whereIn('proxy_id',$idArr);
         }
         if ($name){
-            $idArr = WeChatUser::where('nickname','like','%'.$name.'%')->pluck('id')->toArray();
+            $idArr = WeChatUser::where('nickname','like','%'.$name.'%')->orWhere('name','like','%'.$name.'%')->pluck('id')->toArray();
             $db->whereIn('proxy_id',$idArr);
         }
         if ($date){
