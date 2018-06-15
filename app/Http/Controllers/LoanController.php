@@ -308,6 +308,7 @@ class LoanController extends Controller
                         $ratio = $config->rate/100;
                         $price = $loan->brokerage * ($ratio-$swap);
                     }elseif($i==2){
+                        $brokerage->type = 3;
                         if ($userName!=''){
                             $brokerage->remark = '来自'.$userName.'的奖励';
                         }
