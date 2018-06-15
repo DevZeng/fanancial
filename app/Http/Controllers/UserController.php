@@ -801,6 +801,7 @@ class UserController extends Controller
     public function userData()
     {
         $date = Input::get('date',date('Y-m-d'));
+        dd($date);
         $limit = Input::get('limit',10);
         $page = Input::get('page',1);
         $count = WeChatUser::where('level','!=','D')->count();
